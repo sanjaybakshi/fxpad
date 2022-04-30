@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+
+
+  <style>
+    canvas {
+	border: 1px solid black;
+	//width: 860;
+	//height: 660;
+    }
+
+
+    /* Style buttons */
+    .btn {
+	background-color: DodgerBlue; /* Blue background */
+	border: none; /* Remove borders */
+	color: white; /* White text */
+	padding: 12px 16px; /* Some padding */
+	font-size: 16px; /* Set a font size */
+	cursor: pointer; /* Mouse pointer on hover */
+    }
+
+    /* Darker background on mouse-over */
+    .btn:hover {
+	background-color: RoyalBlue;
+    }
+
+    .movie {
+	background-color: transparent; /* Blue background */
+	//border: none; /* Remove borders */
+	//color: white; /* White text */
+	//padding: 12px 16px; /* Some padding */
+	//font-size: 16px; /* Set a font size */
+	//cursor: pointer; /* Mouse pointer on hover */
+	border: 1px solid #333;
+	margin: 1rem;
+
+    }
+
+    .timeslider {
+	  display: flex;
+	  flex-flow: row wrap;
+	  justify-content: flex-start;
+
+	margin: 0;
+	left: 50%;
+	border: 1px solid #333;
+	margin: 1rem;
+
+    }
+
+    .playslider {
+	margin: 0;
+	left: 0%;
+	border: 1px solid #333;
+	margin: 1rem;
+	//width: 100%
+    }
+
+
+    
+    .container {
+	display: flex;
+	margin: 0;
+	border: 1px solid #333;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+
+
+    }
+
+    .item1 {
+	margin: 10px;
+	padding: 5px;
+	font-size: 30px;
+	border: 1px solid #333;
+    }
+
+    .item2 {
+	margin: 10px;
+	font-size: 30px;
+	padding: 5px;
+
+	border: 1px solid #333;
+	flex-grow: 10;
+    }
+
+
+input[type=range] {
+  position: relative;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  background: #ddd;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: red;
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: red;
+  cursor: pointer;
+}    
+    
+  </style>
+  
+  
+
+  <!---  <canvas id="fxCanvas"  width="560" height="360"></canvas>  --->
+
+  <canvas id="fxCanvas"   width="860" height="660"></canvas> 
+
+  <div class="container">
+
+      <!---
+    <button class="item1" id="playPauseBtn" name="playPauseBtn"> <img src="pause.png" height="35" width="35">   </button>
+
+    --->
+    
+    <input type="image" id="playPauseBtn" alt="PlayPause"
+	   src="./play.png" height="35" width="35">
+
+    
+    <div class="item2">
+      <input type="range" id="playSlider" name="playSlider"
+             min="0" max="11">
+    </div>
+
+
+
+  </div>
+
+  <img class="imgClass"
+       id="debugImageBox"
+	 src="./testimg.png"
+	 alt="Grapefruit slice atop a pile of other slices">
+
+  
+    <script src="rectangle.js"></script>
+    <script src="point.js"></script>
+
+    <script src="../../liquidfun.js-demo-master/js/lib/liquidfun_v1.1.0.min.js"></script>
+    <script type="module" src="TfxPage.js"></script>
+  <!---
+    <script src="box.js"></script>
+    --->
+
+</html>
