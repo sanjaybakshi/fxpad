@@ -1,6 +1,8 @@
 class TplaybackSlider
 {
-    constructor(playPauseBtnDocName,playSliderDocName,canvas) {
+    constructor(playBackCtrlDocName, playPauseBtnDocName, playSliderDocName, canvas) {
+
+	this._playBackCtrl   = document.getElementById(playBackCtrlDocName)
 	this._playPauseBtn   = document.getElementById(playPauseBtnDocName)
 	this._playSliderCtln = document.getElementById(playSliderDocName)
 

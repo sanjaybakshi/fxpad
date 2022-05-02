@@ -131,7 +131,7 @@ class Tbox
 	ctx.lineWidth = 1;
 
 	if (this.isStatic()) {
-	    ctx.strokeStyle = 'red';
+	    ctx.strokeStyle = 'orange';
 	} else {
 	    ctx.strokeStyle = 'black';	    
 	}
@@ -226,8 +226,6 @@ class Tbox2d_world
 	}
 
 
-	this._boundaryPixels = 10
-
 	this._fObjectList   = []
 
 	this._fGravity = new Box2D.b2Vec2(0, -10);
@@ -305,11 +303,6 @@ class Tbox2d_world
 	    b.removeFromSimulation()	    
 	}
 
-	// Add bottom boundary.
-	//
-	this.addBox( [fCanvasWidth/2,fCanvasHeight-this._boundaryPixels/2], fCanvasWidth, this._boundaryPixels, 0, false );
-
-	this.addBox( [fCanvasWidth/2,25], 50, 50, 0, false);	
     }
     
     setFrame(f)

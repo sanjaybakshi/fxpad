@@ -3,6 +3,9 @@ import Tbox2d_world from "./Tbox2d_classes.js";
 import Timage       from "./Timage.js";
 import Tevent       from "./Tevent.js";
 
+import Ttouch	    from "./Ttouch.js";
+
+
 class Tcanvas
 {
     _pauseAnim     = true
@@ -45,24 +48,45 @@ class Tcanvas
 	//
 	this.fCurrentStroke = new Tstroke()
 
+	this._canvasWidth = function() {
 
-	this._canvasWidth  = this.fCanvas.width
-	this._canvasHeight = this.fCanvas.height
+	    return this.fCanvas.width
+	}
 
-	this._box2dWorld = new Tbox2d_world(this._canvasWidth, this._canvasHeight)
+	this._canvasHeight = function() {
+	    return this.fCanvas.height
+	}
+	
 
 
 	
+	this.fCanvas.addEventListener('touchstart', (e) => {
+	    this.mouseDown(e)
+	});
 	this.fCanvas.addEventListener('mousedown', (e) => {
-	    this.mouseDown(e.offsetX, e.offsetY)
+	    this.mouseDown(e)
 	});
 
+	
 	this.fCanvas.addEventListener('mousemove', (e) => {
-	    this.mouseMove(e.offsetX, e.offsetY);
+	    this.mouseMove(e);
+	});
+
+	this.fCanvas.addEventListener('touchmove', (e) => {
+	    this.mouseMove(e);
 	});
 	
 	window.addEventListener('mouseup', (e) => {
-	    this.mouseUp(e.offsetX, e.offsetY);
+	    this.mouseUp(e);
+
+	});
+
+	window.addEventListener('touchend', (e) => {
+	    this.mouseUp(e);
+
+	});
+	window.addEventListener('touchleave', (e) => {
+	    this.mouseUp(e);
 
 	});
 
@@ -77,12 +101,11 @@ class Tcanvas
 	this.fCanvas.addEventListener('dragenter', (e) => {
 	    this.onDragEnter(e);
 	});
-	
 
 	
 	// Test to draw an image.
 	//
-	this._testSprite = new Timage([this._canvasWidth/2, this._canvasHeight/2]);
+	this._testSprite = new Timage([this._canvasWidth()/2, this._canvasHeight()/2]);
 	this._testSprite.setScaleWH(100,200)
 	//this._testSprite.setScale(100)
 	console.log("set scale")
@@ -96,6 +119,20 @@ class Tcanvas
 	this.setFrameRange(30*5) // 30fps * 5 seconds = 150 frames
 	
 	window.requestAnimationFrame(this.draw);
+
+
+	this._box2dWorld = new Tbox2d_world(this._canvasWidth(), this._canvasHeight())
+
+	// Add bottom boundary.
+	//
+	console.log("adding static box")
+	let boundaryPixels = 10
+	this._box2dWorld.addBox( [this._canvasWidth()/2,this._canvasHeight()-boundaryPixels/2], this._canvasWidth(), boundaryPixels, 0, false );
+
+	//this.addBox( [fCanvasWidth/2,25], 50, 50, 0, false);	
+
+
+
 	this.setFrame(0)
     }
 
@@ -110,7 +147,7 @@ class Tcanvas
 	
 	this.fContext.setTransform(1, 0, 0, 1, 0, 0);
 	
-	this.fContext.clearRect(0, 0, this._canvasWidth, this._canvasHeight)
+	this.fContext.clearRect(0, 0, this._canvasWidth(), this._canvasHeight())
 	
 	this.fCurrentStroke.draw(this.fContext)
 
@@ -134,9 +171,21 @@ class Tcanvas
 
     }
     
-    mouseDown(mx, my)
+    mouseDown(e)
     {
-	let b = this._box2dWorld.intersects([mx,my])
+	let touchInfo = Ttouch.getTouch(e)
+
+	let x = touchInfo.x
+	let y = touchInfo.y
+	
+	const output = document.getElementById("output")
+	output.textContent = 'info2 = ' + x + ' ' + y
+	
+
+
+
+	
+	let b = this._box2dWorld.intersects([x,y])
 	
 	if (b == null) {
 	    this._isDrawingObject = true
@@ -149,14 +198,21 @@ class Tcanvas
 	    console.log("drawing texture")
 	    
 	}
-	this.fCurrentStroke.push([mx,my])
+	this.fCurrentStroke.push([x,y])
     }
     
-    mouseUp(mx, my)
+    mouseUp(e)
     {
-	if (this._isDrawingObject) {
 
-	    this.fCurrentStroke.push([mx,my])
+	if (!this._isDrawingObject && !this._isDrawingTexture) {
+	    return
+	}
+
+	const output = document.getElementById("output")
+
+	output.textContent = 'here'
+
+	if (this._isDrawingObject) {
 
 	    // Figure out the box.
 	    //
@@ -166,8 +222,7 @@ class Tcanvas
 		let width  = box['width'];
 		let height = box['height'];
 
-		this._box2dWorld.addBox(center, width, height, this.getCurrentFrame())
-		
+		this._box2dWorld.addBox(center, width, height, this.getCurrentFrame())		
 	    }
 	    
 	    // Reset the stroke.
@@ -193,11 +248,23 @@ class Tcanvas
 	    this.setFrame(this._currentFrame)
 	}
     }
-    mouseMove(mx, my)
+
+
+    mouseMove(e)
     {
-	if (this._isDrawingObject || this._isDrawingTexture) {
-	    this.fCurrentStroke.push([mx,my])
-	}	    
+	if (!this._isDrawingObject && !this._isDrawingTexture) {
+	    return
+	}
+
+	let touchInfo = Ttouch.getTouch(e)
+
+	let x = touchInfo.x
+	let y = touchInfo.y
+	
+	e.preventDefault()
+
+	
+	this.fCurrentStroke.push([x,y])
     }
 
     onDrop(e)
@@ -228,8 +295,6 @@ class Tcanvas
 	this._box2dWorld.addBoxWithTexture(center, width, height, this.getCurrentFrame(), url[1])
 
 
-	let debugImageBox  = document.getElementById('debugImageBox')
-	debugImageBox.src = url[1]
 	/*
 	for (const f of fileList) {
 

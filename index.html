@@ -1,14 +1,41 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 
 
   <style>
-    canvas {
-	border: 1px solid black;
-	//width: 860;
-	//height: 660;
-    }
+
+        body {
+
+	
+	    position: absolute;
+	    margin: 0;
+	    left: 0;
+	    top: 0;
+	    width: 100%;
+	    height: 100%;
+	    font-family: sans-serif;
+	    //font-size: 13px;
+	    //padding: 1em;
+	    box-sizing: border-box;
+
+	    border-style: solid;
+	    border-color: red;
+	    border-width: 1px;      
+	}
+
+	canvas {
+	    position: absolute;	    
+	    margin: 0px;
+	    
+	    border-style: solid;
+	    border-color: blue;
+	    border-width: 1px;
+
+	    z-index:1;
+	}
 
 
     /* Style buttons */
@@ -68,6 +95,7 @@
 	justify-content: center;
 	align-items: center;
 
+	z-index:2;
 
     }
 
@@ -115,20 +143,24 @@ input[type="range"]::-moz-range-thumb {
 }    
     
   </style>
-  
+</head>
+
+
+<body>
   
 
   <!---  <canvas id="fxCanvas"  width="560" height="360"></canvas>  --->
 
-  <canvas id="fxCanvas"   width="860" height="660"></canvas> 
+  <canvas id="fxCanvas"   width="512" height="512"></canvas> 
 
-  <div class="container">
+  <div id="playBackCtrl" class="container">
 
       <!---
     <button class="item1" id="playPauseBtn" name="playPauseBtn"> <img src="pause.png" height="35" width="35">   </button>
 
     --->
-    
+
+
     <input type="image" id="playPauseBtn" alt="PlayPause"
 	   src="./play.png" height="35" width="35">
 
@@ -142,14 +174,11 @@ input[type="range"]::-moz-range-thumb {
 
   </div>
 
-  <img class="imgClass"
-       id="debugImageBox"
-	 src="./testimg.png"
-	 alt="Grapefruit slice atop a pile of other slices">
-
-  
+  <div id="output"></div>  
 
     <script src="./liquidfun.js-demo-master/js/lib/liquidfun_v1.1.0.min.js"></script>
     <script type="module" src="TfxPage.js"></script>
+
+</body>
 
 </html>
