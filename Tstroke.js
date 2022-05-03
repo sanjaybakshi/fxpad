@@ -4,16 +4,19 @@ class Tstroke
 {
     constructor() {
 
-	this._pointList = []
-
-	this.push = function(p) {
-	    this._pointList.push(p)
+	this._pointList    = []
+	this._pressureList = []
+	
+	this.push = function(pt, pressure) {
+	    this._pointList.push(pt)
+	    this._pressureList.push(pressure)
 	}
     }
 
     clear()
     {
-	this._pointList = []
+	this._pointList    = []
+	this._pressureList = []
     }
 
     draw(ctx)
@@ -22,18 +25,30 @@ class Tstroke
 	    return
 	}
 	
-	ctx.beginPath();
-	ctx.strokeStyle = 'black';
-	ctx.lineWidth = 1;
+	ctx.strokeStyle = 'black'
+	ctx.lineCap     = 'round'
+	ctx.lineJoin    = 'round'
 
-	ctx.moveTo(this._pointList[0][0], this._pointList[0][1])
-	
-	for (const p of this._pointList) {
-	    ctx.lineTo(p[0], p[1]);
+
+	for (let i=0; i < this._pointList.length-1; i++) {
+
+	    let pt1 = this._pointList[i]
+	    let pt2 = this._pointList[i+1]
+
+	    let pr  = this._pressureList[i] * 8
+
+
+	    ctx.beginPath()
+	    ctx.moveTo(pt1[0],pt1[1])
+	    ctx.lineWidth = pr
+	    ctx.lineTo(pt2[0],pt2[1])
+	    ctx.stroke();
+	    ctx.closePath()
+
+	    //const output = document.getElementById("output")
+	    //output.textContent = 'pe: ' + i + ' ' + pr
+	    //console.log(i,pr)
 	}
-	ctx.stroke();
-	ctx.closePath();
-
     }
     
     axisAlignedBox()

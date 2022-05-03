@@ -198,7 +198,7 @@ class Tcanvas
 	    console.log("drawing texture")
 	    
 	}
-	this.fCurrentStroke.push([x,y])
+	this.fCurrentStroke.push([x,y], touchInfo.pressure)
     }
     
     mouseUp(e)
@@ -263,8 +263,8 @@ class Tcanvas
 	
 	e.preventDefault()
 
-	
-	this.fCurrentStroke.push([x,y])
+
+	this.fCurrentStroke.push([x,y], touchInfo.pressure)	
     }
 
     onDrop(e)
