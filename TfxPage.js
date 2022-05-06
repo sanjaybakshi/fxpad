@@ -6,6 +6,12 @@ let fPlaybackSlider
 
 function init()
 {
+
+    let canvas = document.getElementById("fxCanvas")
+    console.log("canvas:")
+    console.log(canvas.offsetWidth, canvas.offsetHeight);
+
+    
     fCanvas = new Tcanvas("fxCanvas")
     fPlaybackSlider = new TplaybackSlider("playBackCtrl", "playPauseBtn", "playSlider", fCanvas)
 
@@ -21,11 +27,13 @@ function init()
     fitToWindow()
 
     fCanvas.init()    
-
 }
 
 function fitToWindow()
 {
+    fCanvas.fCanvas.width  = fCanvas.fCanvas.offsetWidth;
+    fCanvas.fCanvas.height = fCanvas.fCanvas.offsetHeight;
+/*
     let pbsHeight = fPlaybackSlider._playBackCtrl.clientHeight
     console.log(pbsHeight)
     
@@ -40,14 +48,18 @@ function fitToWindow()
     fPlaybackSlider._playBackCtrl.style.position = "absolute";
     fPlaybackSlider._playBackCtrl.style.left     = x_pos+'px';
     fPlaybackSlider._playBackCtrl.style.top      = y_pos+'px';
-
+*/
     // get the height of the playblackslider
     //
-    console.log(fPlaybackSlider._playBackCtrl)    
+    //console.log(fPlaybackSlider._playBackCtrl)
+    console.log("fanvas:")
+    console.log(fCanvas.fCanvas.width, fCanvas.fCanvas.height);
+ 
 }
 
+//window.onload = init
 window.addEventListener("load", init);
 
 
-window.addEventListener('resize', fitToWindow);
+//window.addEventListener('resize', fitToWindow);
 

@@ -1,96 +1,117 @@
-/*
-** Styles used in the jQuery Essential Training course materials
-*/
+
+html,
 body {
-    font-family: "Open Sans", sans-serif;
-    font-size: 12pt;
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.TopDiv {
+    //border: 5px outset red;
+    background-color: gainsboro;
+    //text-align: center;
+    height: 5%;
+}
+
+canvas {
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 99%;
+    height: 85%;
+    //background-color: lightyellow;
+    background-color: white;
+}
+
+
+
+.TimeSlider {
+    display: grid;
+    //grid-column-gap: 5rem;
+    align-items: center;
+    justify-items: center;
+
+    grid-template-columns: 1fr minmax(75%,90%) 1fr;
+    background-color: whitesmoke;
+    //background-color: black;
+    height: 10%;
+}
+
+input[type=range] {
+  //position: relative;
+  -webkit-appearance: none;
+  width: 100%;
+  //height: 25px;
+  //background: #ddd;
+  //outline: black;
+
+  //background: linear-gradient(to right, #f00 0%, #f00 50%, #fff 50%, #fff 100%);
+  border-radius: 8px;
+  height: 2px;
+  outline: none;  
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: dimgray;
+    margin-top: -4px;
+}
+
+
+input[type=number] {
+  -webkit-appearance: none;
+  outline: none;
+
+  background: transparent;
+  //background-color:rgba(0, 0, 0, 0.05);
+  border: none;
+  text-align:center;
+  font-size:24px;
+  color: dimgray;
+  border-bottom-style: dashed;
+  //padding: 2px;
+}
+
+// This section will remove the up/down arrows in the text field.
+//
+
+input[type='number']::-webkit-inner-spin-button, 
+input[type='number']::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
     margin: 0;
-    line-height: 1.2em;
 }
 
-body > h1 {
-    background-color: #33d;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 100;
-    margin:0;
-    padding-left: 10pt;
-    padding-right: 10pt;
-    padding-top:25pt;
-    padding-bottom: 15pt;
-    box-shadow: 0px 5px 5px 0px rgba(171,171,171,1);
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-#content {
-    margin: 10pt;
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
+//
 
-#example {
-    border: 1px solid gray;
-    background-color: #b3c8d0;
-    font-size:14pt;
-    padding-left: 10pt;
-    padding-right: 10pt;
-    min-height: 200px;
-}
 
-.box {
-    border: 1px solid gray;
-    background-color: #b3c8d0;
-    font-size:14pt;
-    padding-left: 10pt;
-    padding-right: 10pt;
-    min-height: 200px;
-    width: 300px;
-}
 
-.box p {
-    margin: 0 1pt 0 2pt
-}
 
-.smallbox {
-    border: 1px solid gray;
-    background-color: #b3c8d0;
-    font-size:14pt;
-    padding-left: 10pt;
-    padding-right: 10pt;
-    margin-bottom: 10pt;
-    margin-right: 0;
-    margin-left: 0;
-    min-height: 150px;
-    width: 200px;
-}
 
-.inline {
-    display: inline-block;
-}
-
-code {
-    background-color: #e8e8e8;
-    border: 1px solid #a8a8a8;
-    border-radius: 3px;
-    padding: 1pt 2pt;
-    margin: 2pt;
-    font-family: "source-code-pro", Consolas, monospace;
-    font-size: .9em;
-}
-
-li {
-    line-height: 1.3em;
-}
-
-button {
-    font-size: 14pt;
-    margin: 8px;
-}
-
-#eventDetails {
-    border: 1px solid #aaa;
-    margin-top: 8pt;
-    padding: 2pt;
-}
-
-.lineitem {
-    width: 120px;
-    display: inline-block
+input[type=image] {
+  //position: relative;
+  -webkit-appearance: none;
+  //height: 25px;
+  //background: red;
 }
