@@ -13,7 +13,7 @@ function init()
 
     
     fCanvas = new Tcanvas("fxCanvas")
-    fPlaybackSlider = new TplaybackSlider("playBackCtrl", "playPauseBtn", "playSlider", fCanvas)
+    fPlaybackSlider = new TplaybackSlider("playPauseBtn", "playSlider", "playFrameNumber", fCanvas)
 
 
     

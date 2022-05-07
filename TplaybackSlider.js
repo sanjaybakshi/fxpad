@@ -1,10 +1,10 @@
 class TplaybackSlider
 {
-    constructor(playBackCtrlDocName, playPauseBtnDocName, playSliderDocName, canvas) {
+    constructor(playPauseBtnDocName, playSliderDocName, playFrameNumberDocName, canvas) {
 
-	this._playBackCtrl   = document.getElementById(playBackCtrlDocName)
-	this._playPauseBtn   = document.getElementById(playPauseBtnDocName)
-	this._playSliderCtln = document.getElementById(playSliderDocName)
+	this._playPauseBtn        = document.getElementById(playPauseBtnDocName)
+	this._playSliderCtln      = document.getElementById(playSliderDocName)
+	this._playFrameNumberCtln = document.getElementById(playFrameNumberDocName)	
 
 	this._canvas = canvas;
 
@@ -42,9 +42,6 @@ class TplaybackSlider
 
     sliderChange(e)
     {
-	console.log(e.target.value)
-
-	
 	this._canvas.setFrame(e.target.value)
     }
 
@@ -53,11 +50,12 @@ class TplaybackSlider
 	//console.log(data)
 
 	this._playSliderCtln.value = data
+
+	this._playFrameNumberCtln.value = data
     }
 
     frameRangeChange(data)
     {
-	console.log(data)
 	this._playSliderCtln.max = data
     }
     

@@ -54,7 +54,8 @@ input[type=range] {
   //background: linear-gradient(to right, #f00 0%, #f00 50%, #fff 50%, #fff 100%);
   border-radius: 8px;
   height: 2px;
-  outline: none;  
+  outline: none;
+  data-color: #00f;
 }
 
 input[type=range]::-webkit-slider-thumb {
