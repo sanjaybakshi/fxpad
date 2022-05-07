@@ -6,6 +6,8 @@ class Tstroke
 
 	this._pointList    = []
 	this._pressureList = []
+
+	this._color = ""
 	
 	this.push = function(pt, pressure) {
 	    this._pointList.push(pt)
@@ -25,7 +27,8 @@ class Tstroke
 	    return
 	}
 	
-	ctx.strokeStyle = 'black'
+	//ctx.strokeStyle = 'black'
+	ctx.strokeStyle = this._color
 	ctx.lineCap     = 'round'
 	ctx.lineJoin    = 'round'
 

@@ -9,12 +9,6 @@ import Ttouch	    from "./Ttouch.js";
 class Tcanvas
 {
     _pauseAnim     = true
-    _fps           = 0
-    _lastFrameTime = 0
-
-    _frameCount    = 0
-    _timeCount     = 0    
-
 
     // These are the new ones....
     _currentFrame   = 0
@@ -23,21 +17,9 @@ class Tcanvas
     _frameChangeEvent      = new Tevent()
     _frameRangeChangeEvent = new Tevent()
 
-    
-    // 10 seconds of animation.
-    //
-    _secondsOfAnimation = 10
-    _animFramesPerSecond = 30
-    _totalFrames = this._secondsOfAnimation * this._animFramesPerSecond
-    
-    
-    _refreshSpeed = 60 // 60fps
-
-    
     constructor(canvasDocName) {
 	this.fCanvas  = document.getElementById(canvasDocName)
 	this.fContext = this.fCanvas.getContext('2d')
-
 
 	this._isDrawingObject   = false
 	this._isDrawingTexture  = false	
@@ -158,7 +140,6 @@ class Tcanvas
 	//
 	//this._testSprite.draw(this.fContext)
 	
-	this.showFPS();
 
 	/*
 
@@ -333,19 +314,6 @@ class Tcanvas
     {
 	e.preventDefault()
 	console.log("on drag enter")
-    }
-
-    showFPS()
-    {
-        this.fContext.fillStyle = "Black";
-        this.fContext.font      = "normal 16pt Arial";
-
-        //this.fContext.fillText(this._fps + " fps", 10, 26);
-	this.fContext.fillText(this._currentFrame + " frame", 10, 26);
-
-
-	let timeInfo = this._frameCount / 60;
-	this.fContext.fillText(timeInfo + " sec", 10, 46);	
     }
 
     setFrame(f)

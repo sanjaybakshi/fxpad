@@ -1,21 +1,20 @@
 import Tcanvas         from "./Tcanvas.js";
 import TplaybackSlider from "./TplaybackSlider.js";
+import Tpalette        from "./Tpalette.js";
+
+
 
 let fCanvas
 let fPlaybackSlider
+let fPalette
 
 function init()
 {
-
-    let canvas = document.getElementById("fxCanvas")
-    console.log("canvas:")
-    console.log(canvas.offsetWidth, canvas.offsetHeight);
+    fCanvas         = new Tcanvas("fxCanvas")
+    fPlaybackSlider = new TplaybackSlider("playPauseBtn", "playSlider", "playFrameNumber", fCanvas)
+    fPalette        = new Tpalette("palette", "brushColor", fCanvas)
 
     
-    fCanvas = new Tcanvas("fxCanvas")
-    fPlaybackSlider = new TplaybackSlider("playPauseBtn", "playSlider", "playFrameNumber", fCanvas)
-
-
     
 
     // Try to lay out the controls.
