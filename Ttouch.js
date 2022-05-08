@@ -18,6 +18,23 @@ class Ttouch
 	return {left: offsetLeft, top: offsetTop};
     }
 
+    static getClientXY(e)
+    {
+	let x
+	let y
+	
+	if (e.touches && e.touches[0]) {
+	    x = e.touches[0].clientX
+	    y = e.touches[0].clientY
+	} else {
+	    x = e.clientX
+	    y = e.clientY
+	}
+
+	return {x: x, y: y}
+    }
+
+    
     static getTouch(e) {
 	
 	let pressure = 0.1

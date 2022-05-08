@@ -31,7 +31,6 @@ class Timage
 
 	
 	var loadImageFunction = function(e) {
-	    console.log(e["target"])
 
 	    let img = e["target"]
 	    
@@ -76,7 +75,6 @@ class Timage
 		this._scaleY = sizeInPixels / this._imgBitmap.ImageBitmap.height
 		this._scaleX = this._scaleY
 	    }
-	    console.log(this._scaleX, this._scaleY)
 	}
     }
 
@@ -91,7 +89,6 @@ class Timage
 
 	    this._scaleX = sizeInPixelsWidth  / this._imgBitmap.ImageBitmap.width
 	    this._scaleY = sizeInPixelsHeight / this._imgBitmap.ImageBitmap.height
-	    console.log(this._scaleX, this._scaleY)
 	}
     }
     
@@ -122,8 +119,6 @@ class Timage
 	var setBitmapFunction = function(bm) {
 	    this._imgBitmap = bm;
 
-	    console.log("called here")
-	    console.log(this._imgBitmap)
 	}
 
 	let boundBitmapFunction = setBitmapFunction.bind(this)

@@ -131,7 +131,9 @@ class Tbox
 	ctx.lineWidth = 1;
 
 	if (this.isStatic()) {
-	    ctx.strokeStyle = 'orange';
+	    //ctx.strokeStyle = 'orange';
+	    
+	    ctx.strokeStyle = 'black';
 	} else {
 	    ctx.strokeStyle = 'black';	    
 	}
@@ -191,8 +193,6 @@ class Tbox
 
     grabImageFromCanvas(canvas)
     {
-	console.log("grabImageFromCanvas")
-
 	let pos_world = this._body.GetPosition();
 	let rot       = this._body.GetAngle();
 
@@ -240,9 +240,6 @@ class Tbox2d_world
 
     addBoxWithTexture(pos, width, height, frame, textureFilename, isDynamic=true)
     {
-	console.log('adding box with texture')
-
-	
 	let box = new Tbox(pos, width, height, frame, isDynamic);
 	this._fObjectList.push(box)
 
@@ -250,7 +247,6 @@ class Tbox2d_world
 	    box._widthPixels = width
 	    box._heightPixels = height
 	    
-	    console.log("setBoxSize %d %d", width, height)
 	}
 	
 
@@ -328,7 +324,6 @@ class Tbox2d_world
 
 		if (b.intersects(m)) {
 
-		    console.log("found an intersection")
 		    return b
 		}
 	    }

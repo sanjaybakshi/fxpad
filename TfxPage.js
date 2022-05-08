@@ -20,9 +20,6 @@ function init()
     // Try to lay out the controls.
     //
 
-    console.log("window")
-    console.log(window.innerWidth, window.innerHeight)
-
     fitToWindow()
 
     fCanvas.init()    
@@ -51,9 +48,6 @@ function fitToWindow()
     // get the height of the playblackslider
     //
     //console.log(fPlaybackSlider._playBackCtrl)
-    console.log("fanvas:")
-    console.log(fCanvas.fCanvas.width, fCanvas.fCanvas.height);
- 
 }
 
 //window.onload = init

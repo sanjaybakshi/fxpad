@@ -13,18 +13,21 @@
   </div>
 
 
-  <div class="TopDiv"> </div>
+  <div class="TopDiv">
+    <h3 class="DebugCtrl" id="DebugCtrl"> Debugging Info </h3>
+    
+    
+  </div>
 
   <canvas id="fxCanvas"> </canvas> 
 
-  <div class="TimeSlider" id="playBackCtrl">
+  <div class="TimeSliderGrp" id="playBackCtrl">
 
-    <input type="image" id="playPauseBtn" alt="PlayPause"
-	   src="./play.png" height="35" width="35">
+    <input class="PlayBtn" type="image" id="playPauseBtn" src="./play.png">
+    
+    <input class="PlaySlider" type="range" id="playSlider"/>
 
-      <input type="range" id="playSlider"/>
-
-      <input type="number" min="0" max="255" value="121" id="playFrameNumber" />
+    <input class="PlayFrameNum" type="number" min="0" max="255" value="121" id="playFrameNumber" />
 
 
   </div>

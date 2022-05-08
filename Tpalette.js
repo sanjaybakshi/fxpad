@@ -19,8 +19,16 @@ class Tpalette
 	this._paletteCtrl.addEventListener('mousedown', (e) => {
 	    this.mouseDown(e)
 	});
+	
+	this._paletteCtrl.addEventListener('touchstart', (e) => {
+	    this.mouseDown(e)
+	});
 
 	this._paletteCtrl.addEventListener('mouseup', (e) => {
+	    this.mouseUp(e)
+	});
+
+	this._paletteCtrl.addEventListener('touchend', (e) => {
 	    this.mouseUp(e)
 	});
 
@@ -28,27 +36,26 @@ class Tpalette
 	    this.mouseMove(e)
 	});
 
+	window.addEventListener('touchmove', (e) => {
+	    this.mouseMove(e)
+	});
+
 	this._paletteColorCtrl.addEventListener('change', (e) => {
 	    this.colorChanged(e)
 	});
 	
-	console.log("in the constructor for palette")
     }
 
     mouseDown(e)
     {
-	let touchInfo = Ttouch.getTouch(e)
+	let clientXY = Ttouch.getClientXY(e)
 
-	let x = touchInfo.x
-	let y = touchInfo.y
-
-	console.log(x,y)
-	const output = document.getElementById("output")
-	output.textContent = 'info2 = ' + x + ' ' + y
+	const output = document.getElementById("DebugCtrl")
+	//output.textContent = 'info2 = ' + x + ' ' + y
 
 	this._isMovingPalette = true
-	this._offsetInPalette = [this._paletteCtrl.offsetLeft - e.clientX,
-				 this._paletteCtrl.offsetTop  - e.clientY]
+	this._offsetInPalette = [this._paletteCtrl.offsetLeft - clientXY.x,
+				 this._paletteCtrl.offsetTop  - clientXY.y]
 
     }
 
@@ -59,18 +66,23 @@ class Tpalette
 
     mouseMove(e)
     {
+	let clientXY = Ttouch.getClientXY(e)
+
+	const output = document.getElementById("DebugCtrl")
+	//output.textContent = 'mov =' + clientXY.x + ' ' + clientXY.y
+
+
 	if (this._isMovingPalette) {
 
-	    this._paletteCtrl.style.left = (e.clientX + this._offsetInPalette[0]) + 'px';
-	    this._paletteCtrl.style.top  = (e.clientY + this._offsetInPalette[1]) + 'px';	    
+	    
+	    this._paletteCtrl.style.left = (clientXY.x + this._offsetInPalette[0]) + 'px';
+	    this._paletteCtrl.style.top  = (clientXY.y + this._offsetInPalette[1]) + 'px';	    
 	    e.stopPropagation()
 	}
     }
 
     colorChanged(e)
     {
-	console.log('color');
-	console.log(e.target.value)
 	this._canvas.fCurrentStroke._color = e.target.value
     }
 }

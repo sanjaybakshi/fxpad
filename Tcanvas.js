@@ -39,16 +39,12 @@ class Tcanvas
 	    return this.fCanvas.height
 	}
 	
-
-
-	
 	this.fCanvas.addEventListener('touchstart', (e) => {
 	    this.mouseDown(e)
 	});
 	this.fCanvas.addEventListener('mousedown', (e) => {
 	    this.mouseDown(e)
 	});
-
 	
 	this.fCanvas.addEventListener('mousemove', (e) => {
 	    this.mouseMove(e);
@@ -90,11 +86,6 @@ class Tcanvas
 	this._testSprite = new Timage([this._canvasWidth()/2, this._canvasHeight()/2]);
 	this._testSprite.setScaleWH(100,200)
 	//this._testSprite.setScale(100)
-	console.log("set scale")
-
-
-
-
     }
 
     init() {
@@ -107,7 +98,6 @@ class Tcanvas
 
 	// Add bottom boundary.
 	//
-	console.log("adding static box")
 	let boundaryPixels = 10
 	this._box2dWorld.addBox( [this._canvasWidth()/2,this._canvasHeight()-boundaryPixels/2], this._canvasWidth(), boundaryPixels, 0, false );
 
@@ -162,9 +152,6 @@ class Tcanvas
 	const output = document.getElementById("output")
 	output.textContent = 'info2 = ' + x + ' ' + y
 	
-
-
-
 	
 	let b = this._box2dWorld.intersects([x,y])
 	
@@ -176,8 +163,6 @@ class Tcanvas
 	    this._isDrawingTexture = true
 
 	    this._drawingTargetObject = b
-	    console.log("drawing texture")
-	    
 	}
 	this.fCurrentStroke.push([x,y], touchInfo.pressure)
     }
@@ -218,10 +203,7 @@ class Tcanvas
 	    this.fCurrentStroke.clear()
 
 	    this._isDrawingTexture = false	    
-
 	    
-	    console.log("here is where the texture should be baked")
-
 	    this._drawingTargetObject.grabImageFromCanvas(this.fCanvas)
 	}
 
@@ -251,22 +233,17 @@ class Tcanvas
     onDrop(e)
     {
 	e.preventDefault()
-	console.log("on drop")
 
 	//const lines = e.dataTransfer.getData("text/uri-list").split("\n");
 
 
 	const fileList = e.dataTransfer.files;
 
-	console.log(fileList)
-
 	var droppedHTML = e.dataTransfer.getData("text/html");
-	console.log(droppedHTML)
 
 	var rex = /src="?([^"\s]+)"?\s*/;
 	var url, res;
 	url = rex.exec(droppedHTML);
-	console.log(url[1])
 
 	let center = [e.offsetX, e.offsetY]
 	let width  = 100
@@ -305,7 +282,6 @@ class Tcanvas
     onDragOver(e)
     {
 	
-	console.log("on drag over")
 	e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 	
 	e.preventDefault()
@@ -313,7 +289,6 @@ class Tcanvas
     onDragEnter(e)
     {
 	e.preventDefault()
-	console.log("on drag enter")
     }
 
     setFrame(f)

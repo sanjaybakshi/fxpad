@@ -4,6 +4,11 @@ body {
    width: 100%;
    height: 100%;
    overflow: hidden;
+   margin: 0;
+   //position: absolute;
+   position: fixed;
+   top: 0;
+   left: 0;
 }
 
 * {
@@ -28,7 +33,7 @@ canvas {
     //background-color: lightyellow;
     background-color: white;
 
-    z-index: 0;
+//    z-index: 0;
 }
 
 .ColorPalette {pa
@@ -37,34 +42,88 @@ canvas {
     justify-items: center;
     //grid-template-columns: 1fr minmax(75%,90%) 1fr;
     background-color: lightblue;
+    //background-color: blue;
     position: absolute;
     top:  100px;
     left: 100px;
     
     padding-top:    20px;
     padding-bottom: 10px;
-    padding-left:    5px;
-    padding-right:   5px;
-    
-    border-radius: 10px;
+    padding-left:    50px;
+    padding-right:   50px;
 
-    z-index: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    //    z-index: 1;
 }
 
-.TimeSlider {
+.TimeSliderGrp {
     display: grid;
     //grid-column-gap: 5rem;
     align-items: center;
     justify-items: center;
 
-    grid-template-columns: 1fr minmax(75%,90%) 1fr;
+    grid-template-columns: 1fr minmax(75%,80%) 1fr;
     background-color: whitesmoke;
     //background-color: black;
     height: 10%;
+    //border-style: solid;
+
 }
 
+.PlayBtn {
+    //border-style: solid;
+    //margin: 10%;
+    //padding: 10%;
+    -webkit-appearance: none;
+
+    //height: 70%;
+    //width:  70%;
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+.PlaySlider {
+    //border-style: solid;    
+
+    -webkit-appearance: none;
+    width: 100%;
+    border-radius: 8px;
+    height: 2px;
+    outline: none;
+    data-color: #00f;
+}
+
+.PlayFrameNum {
+    //border-style: solid;
+    border-style: none;
+    -webkit-appearance: none;
+    outline: none;
+
+    background: transparent;
+    //background-color:rgba(0, 0, 0, 0.05);
+    //border: none;
+    text-align:center;
+    font-size:24px;
+    color: dimgray;
+    border-bottom-style: dashed;
+    //padding: 2px;
+
+    //height: 70%;
+    //width:  70%;
+
+}
+
+.DebugCtrl
+{
+    text-align: center;
+}
+
+
+/*
 input[type=range] {
-  //position: relative;
+    //position: relative;
   -webkit-appearance: none;
   width: 100%;
   //height: 25px;
@@ -77,18 +136,22 @@ input[type=range] {
   outline: none;
   data-color: #00f;
 }
-
+*/
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    border: none;
+    border-style: none;
     height: 16px;
-    width: 16px;
+    width:  16px;
+    //height: 50%;
+    //width: 50%;
     border-radius: 50%;
     background: dimgray;
     margin-top: -4px;
 }
 
 
+
+/*
 input[type=number] {
   -webkit-appearance: none;
   outline: none;
@@ -102,6 +165,7 @@ input[type=number] {
   border-bottom-style: dashed;
   //padding: 2px;
 }
+*/
 
 // This section will remove the up/down arrows in the text field.
 //
