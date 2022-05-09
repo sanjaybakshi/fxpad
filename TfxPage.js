@@ -12,7 +12,7 @@ function init()
 {
     fCanvas         = new Tcanvas("fxCanvas")
     fPlaybackSlider = new TplaybackSlider("playPauseBtn", "playSlider", "playFrameNumber", fCanvas)
-    fPalette        = new Tpalette("palette", "brushColor", fCanvas)
+    fPalette        = new Tpalette("palette", "brushColor", "brushWidthBtn", "brushWidthWindow", "brushWidthSlider", fCanvas)
 
     
     

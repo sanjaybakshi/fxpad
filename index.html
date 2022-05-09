@@ -9,12 +9,24 @@
 <body>
 
   <div class="ColorPalette" id="palette">
-    <input type="color" id="brushColor" value="#e66465">
+    <input                       type="color" id="brushColor" value="#e66465">
+    <input class="brushWidthBtn" type="image" id="brushWidthBtn" src="./pencil-circle-512.png">
+
+  </div>
+
+  <div class="BrushWidthWindow" id="brushWidthWindow">
+
+    <input class="BrushWidthSlider" type="range" name="brushWidthSlider" min="1" max="25" value="5" id="brushWidthSlider" />
+    <!---
+    <label for="brushWidthSlider">Brush Width 2</label>
+    --->
+     
   </div>
 
 
   <div class="TopDiv">
-    <h3 class="DebugCtrl" id="DebugCtrl"> Debugging Info </h3>
+    <!--- <h3 class="DebugCtrl" id="DebugCtrl"> Debugging Info </h3> --->
+    <h3 class="DebugCtrl" id="DebugCtrl"> </h3>
     
     
   </div>
@@ -39,9 +51,10 @@
   
   
   <script src="./liquidfun.js-demo-master/js/lib/liquidfun_v1.1.0.min.js"></script>
-    <script type="module" src="TfxPage.js"></script>
+  <script type="module" src="TfxPage.js"></script>
 
-<!--
+
+  <!--
 -->
 
 </body>

@@ -8,6 +8,8 @@ class Tstroke
 	this._pressureList = []
 
 	this._color = ""
+
+	this._brushWidth = 1
 	
 	this.push = function(pt, pressure) {
 	    this._pointList.push(pt)
@@ -38,7 +40,7 @@ class Tstroke
 	    let pt1 = this._pointList[i]
 	    let pt2 = this._pointList[i+1]
 
-	    let pr  = this._pressureList[i] * 8
+	    let pr  = this._pressureList[i] * 8 * this._brushWidth
 
 
 	    ctx.beginPath()
