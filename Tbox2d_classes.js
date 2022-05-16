@@ -204,6 +204,30 @@ class Tbox
 	this._sprite.grabImageFromCanvas(canvas, pos_pixels.get_x(), pos_pixels.get_y(),
 					 rot, this._widthPixels, this._heightPixels)
     }
+    
+    getCenterInPixels()
+    {
+	// Probably should rotate the object and then find the center but
+	// this is simpler for now.
+	//
+	let pos_world  = this._body.GetPosition();
+	let pos_pixels = world2pixels_vec(pos_world)
+
+	let xCenter = pos_pixels.get_x()
+	let yCenter = pos_pixels.get_y()
+
+	return {x:xCenter, y:yCenter}
+    }
+
+    widthInPixels()
+    {
+	return this._widthPixels
+    }
+    
+    heightInPixels()
+    {
+	return this._heightPixels
+    }
 }
 
 
@@ -331,6 +355,15 @@ class Tbox2d_world
 
 	return null
 
+    }
+
+    deleteBox(b)
+    {
+	b.removeFromSimulation()
+
+	// Delete the object from the list.
+	//
+	this._fObjectList = this._fObjectList.filter(obj => obj != b);	
     }
 }
 

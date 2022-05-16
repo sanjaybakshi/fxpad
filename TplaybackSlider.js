@@ -29,14 +29,14 @@ class TplaybackSlider
     
     playPauseClick(e)
     {
-	if (this._playPauseBtn.src.includes("pause")) {
+	if (this._playPauseBtn.src.includes("Pause")) {
 	    // This means it was playing.  Change it to pause.
-	    this._playPauseBtn.src = "play.png"
-	    this._canvas._pauseAnim = true;
+	    this._playPauseBtn.src = "./icons/Play2.png"
+	    this._canvas.pauseAnim()
 	} else {
 	    // This means it was paused. Change it to play.
-	    this._playPauseBtn.src = "pause.png"
-	    this._canvas._pauseAnim = false;
+	    this._playPauseBtn.src = "./icons/Pause2.png"
+	    this._canvas.playAnim()
 	}
     }
 

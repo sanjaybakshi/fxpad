@@ -3,6 +3,7 @@
 
   <head>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style_toolbars.css">
   </head>
   
 
@@ -10,19 +11,62 @@
 
   <div class="ColorPalette" id="palette">
     <input                       type="color" id="brushColor" value="#e66465">
-    <input class="brushWidthBtn" type="image" id="brushWidthBtn" src="./pencil-circle-512.png">
+    <input class="brushWidthBtn" type="image" id="brushWidthBtn" src="./icons/pencil-circle-512.png">
 
   </div>
 
+  <div class="BoxToolsWnd" id="boxToolsWnd">
+    <input class="DeleteBoxBtn" type="image" id="deleteBoxBtn" src="./icons/Delete.png">
+  </div>
+
+
+  
   <div class="BrushWidthWindow" id="brushWidthWindow">
 
     <input class="BrushWidthSlider" type="range" name="brushWidthSlider" min="1" max="25" value="5" id="brushWidthSlider" />
     <!---
     <label for="brushWidthSlider">Brush Width 2</label>
     --->
-     
+    
   </div>
 
+
+  
+  <div class="toolbar box" id="toolbar.boxId">
+
+    <input class="ImageBtn" type="image" src="./icons/Pencil2.png"     id="paintBoxId"     >
+    <input class="ImageBtn" type="image" src="./icons/Translate2.png"  id="translateBoxId" >
+    <input class="ImageBtn" type="image" src="./icons/Rotate2.png"     id="rotateBoxId"    >
+    <input class="ImageBtn" type="image" src="./icons/Camera2.png"     id="snapshotBoxId"  >   
+    <input class="ImageBtn" type="image" src="./icons/Parameters2.png" id="paramsBoxId"    >    
+    <input class="ImageBtn" type="image" src="./icons/Trash2.png"      id="deleteBoxId"    >
+    
+  </div>
+
+  <div class="toolbar paint" id="toolbar.paintId">
+    <input class="ImageBtn" type="image" src="./icons/LineWidth2.png"  id="strokeWidthId">
+    <input class="ColorBtn" type="color" value="#e66465"               id="strokeColorId">
+    <input class="ImageBtn" type="image" src="./icons/X2.png"          id="strokeDismissId">    
+  </div>
+
+  <div class="strokeParams" id="params.strokeWidthId">
+
+    <div class="Slider">
+      Size
+      <input type="range"  min="1" max="10" value="1" data-color="#f00"  id="slider.strokeSizeId">
+      <input type="number" min="1" max="10" value="1"                     id="number.strokeSizeId">
+
+    </div>
+
+    <div class="Slider">
+      Opacity
+      <input type="range"  min="0" max="100" value="100" data-color="#f00" id="slider.strokeOpacityId">
+      <input type="number" min="0" max="100" value="100"                   id="number.strokeOpacityId">
+    </div>
+  </div>
+  
+  
+  
 
   <div class="TopDiv">
     <!--- <h3 class="DebugCtrl" id="DebugCtrl"> Debugging Info </h3> --->
@@ -35,7 +79,7 @@
 
   <div class="TimeSliderGrp" id="playBackCtrl">
 
-    <input class="PlayBtn" type="image" id="playPauseBtn" src="./play.png">
+    <input class="PlayBtn" type="image" id="playPauseBtn" src="./icons/Play2.png">
     
     <input class="PlaySlider" type="range" id="playSlider"/>
 

@@ -1,0 +1,54 @@
+.ImageBtn {
+    width:  24px;
+    height: 24px;
+}
+
+.ColorBtn {
+    width:  24px;
+    height: 24px;
+    padding: 0px;
+    margin: 0px;
+}
+
+.toolbar {
+    background-color:  #cfd1d2; /* Dark-grey background */
+    grid-gap: .6em;
+    padding: .3em;    
+    border-radius: 5px;
+    //display: inline-grid;
+}
+
+.toolbar.box {
+    position: absolute;
+    grid-template-columns: repeat(6, 1fr);
+    display: none;
+
+    //border: 5px;
+    //border-style: solid;
+    
+}
+
+.toolbar.paint {
+    position: absolute;    
+    grid-template-columns: 1fr 1fr 1fr;
+    display:none;
+}
+
+.strokeParams {
+    position: absolute;
+    background-color:  #cfd1d2; /* Dark-grey background */
+    display: inline-grid;
+    grid-template-columns: 1fr;
+    //padding: .3em;    
+    border-radius: 5px;
+    row-gap: 0em;
+    display: none;
+}
+
+.Slider {
+    display: inline-grid;
+    grid-template-columns: 1fr 2fr .5fr;
+    //grid-gap: .6em;
+    padding: .3em;    
+    border-radius: 5px;
+}

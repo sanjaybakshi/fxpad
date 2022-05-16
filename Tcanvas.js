@@ -5,6 +5,8 @@ import Tevent       from "./Tevent.js";
 
 import Ttouch	    from "./Ttouch.js";
 
+import Ttoolbar_box from "./Ttoolbar_box.js";
+
 
 class Tcanvas
 {
@@ -17,18 +19,28 @@ class Tcanvas
     _frameChangeEvent      = new Tevent()
     _frameRangeChangeEvent = new Tevent()
 
+    kDrawObject  = 0
+    kDrawTexture = 1
+
+    
     constructor(canvasDocName) {
 	this.fCanvas  = document.getElementById(canvasDocName)
 	this.fContext = this.fCanvas.getContext('2d')
 
-	this._isDrawingObject   = false
-	this._isDrawingTexture  = false	
+	this._fToolbar_box = new Ttoolbar_box("toolbar.boxId", this)
 
-	this._drawingTargetObject = null
 
+
+	this._toolMode = this.kDrawObject;
+	this._selectedObject = null
+
+	this._strokeStarted = false
+
+	
 	// list of points that represent the drawing stroke.
 	//
 	this.fCurrentStroke = new Tstroke()
+	
 
 	this._canvasWidth = function() {
 
@@ -121,10 +133,10 @@ class Tcanvas
 	
 	this.fContext.clearRect(0, 0, this._canvasWidth(), this._canvasHeight())
 	
-	this.fCurrentStroke.draw(this.fContext)
 
 	this._box2dWorld.draw(this.fContext)
 
+	this.fCurrentStroke.draw(this.fContext)
 
 	// Test code to rotate an image.
 	//
@@ -141,45 +153,127 @@ class Tcanvas
 	window.requestAnimationFrame(this.draw);
 
     }
-    
+
     mouseDown(e)
+    {
+	if (this._toolMode == this.kDrawObject) {
+	    this.mouseDown_Object(e)
+	} else if (this._toolMode == this.kDrawTexture) {
+	    this.mouseDown_Texture(e)
+	}
+    }
+
+    mouseUp(e)
+    {
+	if (this._toolMode == this.kDrawObject) {
+	    this.mouseUp_Object(e)
+	} else if (this._toolMode == this.kDrawTexture) {
+	    this.mouseUp_Texture(e)
+	}
+    }
+
+    mouseMove(e)
+    {
+	if (this._toolMode == this.kDrawObject) {
+	    this.mouseMove_Object(e)
+	} else if (this._toolMode == this.kDrawTexture) {
+	    this.mouseMove_Texture(e)
+	}
+    }
+    
+    mouseDown_Object(e)
     {
 	let touchInfo = Ttouch.getTouch(e)
 
 	let x = touchInfo.x
 	let y = touchInfo.y
-	
-	const output = document.getElementById("output")
-	output.textContent = 'info2 = ' + x + ' ' + y
-	
-	
+
 	let b = this._box2dWorld.intersects([x,y])
 	
 	if (b == null) {
-	    this._isDrawingObject = true
-	    
-	} else {	
+	
+	    this._strokeStarted = true
+	    this.fCurrentStroke.push([x,y], touchInfo.pressure)
 
-	    this._isDrawingTexture = true
+	    if (this._fToolbar_box.isVisible()) {
+		this._fToolbar_box.hide()
+	    }
+	} else {
 
-	    this._drawingTargetObject = b
+	    // selecting an object (not drawing an object).
+	    //
+	    if (! this._fToolbar_box.isVisible() || b != this._selectedObject) {
+
+
+		// get the center of the box.
+		//
+		let bCenter = b.getCenterInPixels()
+		
+		// These coordinates are relative to the canvas.
+		// Need to convert them to the window.
+		//
+		let r = this.fCanvas.getBoundingClientRect()
+		let canvasX = r.left
+		let canvasY = r.top
+		
+		// 
+		let xP = (bCenter.x - b.widthInPixels()/2)  + canvasX
+		let yP = (bCenter.y + b.heightInPixels()/2) + canvasY
+
+		this._fToolbar_box.showAt([xP,yP])
+
+		this._selectedObject = b;
+		
+	    }	    
 	}
+    }
+
+    mouseDown_Texture(e)
+    {
+	let touchInfo = Ttouch.getTouch(e)
+
+	let x = touchInfo.x
+	let y = touchInfo.y
+
+	this._strokeStarted = true
 	this.fCurrentStroke.push([x,y], touchInfo.pressure)
+	
+    }
+
+
+
+    mouseMove_Object(e)
+    {
+	if (this._strokeStarted) {
+	
+	    let touchInfo = Ttouch.getTouch(e)
+	    
+	    let x = touchInfo.x
+	    let y = touchInfo.y
+	    
+	    this.fCurrentStroke.push([x,y], touchInfo.pressure)
+	}
     }
     
-    mouseUp(e)
+    mouseMove_Texture(e)
     {
+	if (this._strokeStarted) {
 
-	if (!this._isDrawingObject && !this._isDrawingTexture) {
-	    return
+	    let touchInfo = Ttouch.getTouch(e)
+
+	    let x = touchInfo.x
+	    let y = touchInfo.y
+	
+	    e.preventDefault()
+
+
+	    this.fCurrentStroke.push([x,y], touchInfo.pressure)
 	}
-
-	const output = document.getElementById("output")
-
-	output.textContent = 'here'
-
-	if (this._isDrawingObject) {
-
+    }
+    
+    mouseUp_Object(e)
+    {
+	if (this._strokeStarted) {
 	    // Figure out the box.
 	    //
 	    let box = this.fCurrentStroke.axisAlignedBox()
@@ -187,49 +281,34 @@ class Tcanvas
 		let center = box['center'];
 		let width  = box['width'];
 		let height = box['height'];
-
-		this._box2dWorld.addBox(center, width, height, this.getCurrentFrame())		
+		
+		this._box2dWorld.addBox(center, width, height, this.getCurrentFrame())
 	    }
 	    
 	    // Reset the stroke.
 	    //
 	    this.fCurrentStroke.clear()
-
-	    this._isDrawingObject = false
-	} else if (this._isDrawingTexture) {
-
-	    // Reset the stroke.
-	    //
-	    this.fCurrentStroke.clear()
-
-	    this._isDrawingTexture = false	    
-	    
-	    this._drawingTargetObject.grabImageFromCanvas(this.fCanvas)
 	}
+	this._strokeStarted = false
 
 	if (this._pauseAnim) {
 	    this.setFrame(this._currentFrame)
 	}
     }
-
-
-    mouseMove(e)
+    
+    mouseUp_Texture(e)
     {
-	if (!this._isDrawingObject && !this._isDrawingTexture) {
-	    return
+	if (this._strokeStarted) {
+
+	    // Reset the stroke.
+	    //
+	    this.fCurrentStroke.clear()
+
+	    this._selectedObject.grabImageFromCanvas(this.fCanvas)
 	}
-
-	let touchInfo = Ttouch.getTouch(e)
-
-	let x = touchInfo.x
-	let y = touchInfo.y
-	
-	e.preventDefault()
-
-
-	this.fCurrentStroke.push([x,y], touchInfo.pressure)	
+	this._strokeStarted = false
     }
-
+    
     onDrop(e)
     {
 	e.preventDefault()
@@ -330,6 +409,68 @@ class Tcanvas
     getDurationInFrames()
     {
 	return this._totalNumFrames
+    }
+
+    boxToolsVisible()
+    {
+	let boxToolWnd = document.getElementById("boxToolsWnd")
+	if (boxToolWnd.style.display == "none" || boxToolWnd.style.display == "") {
+	    return false
+	} else {
+	    return true
+	}
+    }
+    
+    showBoxTools(b)
+    {
+	let boxToolWnd = document.getElementById("boxToolsWnd")
+	boxToolWnd.style.display = "grid"
+	
+	// get the center of the box.
+	//
+	let bCenter = b.getCenterInPixels()
+
+	//boxToolWnd.style.left = (bCenter.x - b._widthInPixels/2  + 'px')
+	//boxToolWnd.style.top  = (bCenter.y + b._heightInPixels/2 + 'px')
+	boxToolWnd.style.left = (bCenter.x + 'px')
+	boxToolWnd.style.top  = (bCenter.y + 'px')
+	console.log(bCenter.x, bCenter.y)
+    }
+
+    hideBoxTools()
+    {
+	let boxToolWnd = document.getElementById("boxToolsWnd")
+	boxToolWnd.style.display = "none";
+    }
+
+    playAnim()
+    {
+	this._pauseAnim = false
+
+	if (this._fToolbar_box.isVisible()) {
+	    this._fToolbar_box.hide()
+	}
+
+	this._toolMode = this.kDrawObject;
+    }
+    
+    pauseAnim()
+    {
+	this._pauseAnim = true
+    }
+
+    deleteSelectedBox()
+    {
+	this._box2dWorld.deleteBox(this._selectedObject)
+	this._selectedObject = null
+	if (this._fToolbar_box.isVisible()) {
+	    this._fToolbar_box.hide()
+	}	
+    }
+
+    setToolMode(m)
+    {
+	this._toolMode = m
     }
 }
 

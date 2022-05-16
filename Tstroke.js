@@ -40,7 +40,7 @@ class Tstroke
 	    let pt1 = this._pointList[i]
 	    let pt2 = this._pointList[i+1]
 
-	    let pr  = this._pressureList[i] * 8 * this._brushWidth
+	    let pr  = this._pressureList[i] * 1 * this._brushWidth
 
 
 	    ctx.beginPath()
