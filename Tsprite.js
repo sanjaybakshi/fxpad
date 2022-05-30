@@ -164,9 +164,10 @@ class Tsprite
 	
 	inMemoryCanvas.width  = this._widthInPixels
 	inMemoryCanvas.height = this._heightInPixels
-	
-	inMemoryContext.drawImage(this._imgBitmap, 0, 0);
 
+	if (this._imgBitmap != null) {
+	    inMemoryContext.drawImage(this._imgBitmap, 0, 0);
+	}
 	createImageBitmap(inMemoryCanvas, left, top, right-left, bottom-top,
 			  {resizeQuality:"high"}).then(doneFunc)	
     }
