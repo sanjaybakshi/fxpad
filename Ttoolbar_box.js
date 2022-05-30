@@ -76,6 +76,8 @@ class Ttoolbar_box extends Tdiv
     boxParamsClick(e)
     {
 	console.log("boxParams click")
+
+	this.fCanvas.splitSelectedBox()
     }
 
     deleteClick(e)

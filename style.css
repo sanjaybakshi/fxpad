@@ -108,6 +108,24 @@ canvas {
     //data-color: #00f;
 }
 
+
+.DragDropWindow {
+    display: none;
+
+    background-color: lightblue;
+    position: absolute;
+    padding-top:    10px;
+    padding-bottom:  5px;
+    padding-left:    5px;
+    padding-right:   5px;
+    border-radius:   5px;
+
+    resize: both;
+    overflow: auto;
+
+}
+
+
 .TimeSliderGrp {
     display: grid;
     //grid-column-gap: 5rem;

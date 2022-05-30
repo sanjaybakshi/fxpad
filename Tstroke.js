@@ -86,6 +86,15 @@ class Tstroke
 		'width'  : width,
 		'height' : height}
     }
+
+    translate(vx, vy)
+    {
+	for (let i=0; i < this._pointList.length; i++) {
+	    this._pointList[i][0] = this._pointList[i][0] - vx
+	    this._pointList[i][1] = this._pointList[i][1] - vy
+	}
+	
+    }
 }    
 
 export default Tstroke;

@@ -6,6 +6,7 @@ import Tevent       from "./Tevent.js";
 import Ttouch	    from "./Ttouch.js";
 
 import Ttoolbar_box from "./Ttoolbar_box.js";
+import TtextBox     from "./TtextBox.js";
 
 
 class Tcanvas
@@ -25,11 +26,27 @@ class Tcanvas
     
     constructor(canvasDocName) {
 	this.fCanvas  = document.getElementById(canvasDocName)
-	this.fContext = this.fCanvas.getContext('2d')
 
+
+	/*
+	// make a hirez canvas.
+	// https://stackoverflow.com/questions/15661339/how-do-i-fix-blurry-text-in-my-html5-canvas
+	//
+	let ratio = window.devicePixelRatio
+
+	console.log("The ratio is: " + ratio)
+	
+	//window.devicePixelRatio = 2
+	
+	this.fCanvas.width  = this.fCanvas.style.width  * ratio
+	this.fCanvas.height = this.fCanvas.style.height * ratio
+	*/
+	this.fContext = this.fCanvas.getContext('2d')
+	//this.fContext.scale(ratio,ratio)
+	
 	this._fToolbar_box = new Ttoolbar_box("toolbar.boxId", this)
 
-
+	this._fTextBox = new TtextBox("dragDropWindow")
 
 	this._toolMode = this.kDrawObject;
 	this._selectedObject = null
@@ -95,8 +112,8 @@ class Tcanvas
 	
 	// Test to draw an image.
 	//
-	this._testSprite = new Timage([this._canvasWidth()/2, this._canvasHeight()/2]);
-	this._testSprite.setScaleWH(100,200)
+	//this._testSprite = new Timage([this._canvasWidth()/2, this._canvasHeight()/2]);
+	//this._testSprite.setScaleWH(100,200)
 	//this._testSprite.setScale(100)
     }
 
@@ -149,7 +166,7 @@ class Tcanvas
 	this._lastFrameTime = TIME
 */
 
-	
+
 	window.requestAnimationFrame(this.draw);
 
     }
@@ -300,11 +317,13 @@ class Tcanvas
     {
 	if (this._strokeStarted) {
 
+	    this._selectedObject.drawStrokeOnSprite(this.fCurrentStroke)
+
 	    // Reset the stroke.
 	    //
 	    this.fCurrentStroke.clear()
 
-	    this._selectedObject.grabImageFromCanvas(this.fCanvas)
+	    //this._selectedObject.grabImageFromCanvas(this.fCanvas)
 	}
 	this._strokeStarted = false
     }
@@ -316,21 +335,41 @@ class Tcanvas
 	//const lines = e.dataTransfer.getData("text/uri-list").split("\n");
 
 
-	const fileList = e.dataTransfer.files;
+	console.log("these are the types of dropped: " + e.dataTransfer.types)
 
+	var droppedText = e.dataTransfer.getData("text/plain")
 	var droppedHTML = e.dataTransfer.getData("text/html");
 
+	console.log("text: " + droppedText)
+	console.log("html: " + droppedHTML)
+	
+	const fileList = e.dataTransfer.files;
+
+
+	
 	var rex = /src="?([^"\s]+)"?\s*/;
 	var url, res;
 	url = rex.exec(droppedHTML);
 
-	let center = [e.offsetX, e.offsetY]
-	let width  = 100
-	let height = 100
 
-	
-	this._box2dWorld.addBoxWithTexture(center, width, height, this.getCurrentFrame(), url[1])
+	console.log("url: " + url)
 
+	if (url) {
+	    let center = [e.offsetX, e.offsetY]
+	    this._box2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
+	} else {
+	    console.log("no url")
+
+	    let center = [e.offsetX, e.offsetY]
+
+	    this._fTextBox._div.innerHTML = droppedHTML
+	    
+	    //this._fTextBox.showAt([e.offsetX, e.offsetY])
+	    droppedText = droppedText.trim()
+	    this._box2dWorld.addBoxWithText(center, 300, this.getCurrentFrame(), droppedText)
+
+	    
+	}
 
 	/*
 	for (const f of fileList) {
@@ -468,6 +507,23 @@ class Tcanvas
 	}	
     }
 
+    splitSelectedBox()
+    {
+	console.log("about to split " + this._selectedObject._text)
+
+	this._box2dWorld.split(this._selectedObject, this.getCurrentFrame())
+	    
+	this.deleteSelectedBox()
+
+
+	// Have to do this so the box gets added to the simulation.
+	// kind of a hack.
+	//
+	if (this._pauseAnim) {
+	    this.setFrame(this._currentFrame)
+	}
+    }
+    
     setToolMode(m)
     {
 	this._toolMode = m
