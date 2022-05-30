@@ -180,9 +180,6 @@ class Tbox
 	if (usePlanck) {
 	    let pos_world = this._body.getPosition();
 	    let rot       = this._body.getAngle();
-
-	    // map coordinates from world to screen.
-	    //
 	    let pos_pixels = world2pixels_vec(pos_world)
 
 
@@ -200,31 +197,36 @@ class Tbox
 	    } else {
 		ctx.strokeStyle = 'black';	    
 	    }
-	    this.drawRect(ctx, pos_pixels, rot);
+
+	    if (this._sprite._imgBitmap == null) {
+		this.drawRect(ctx, pos_pixels, rot);
+	    }
 	    
 	} else {
 	    let pos_world = this._body.GetPosition();
 	    let rot       = this._body.GetAngle();
-
-	    // map coordinates from world to screen.
-	    //
 	    let pos_pixels = world2pixels_vec(pos_world)
-	    
-	    ctx.beginPath();
-	    ctx.lineWidth = 1;
-	    
-	    if (this.isStatic()) {
-		ctx.strokeStyle = 'black';
-	    } else {
-		ctx.strokeStyle = 'black';	    
-	    }
-	    this.drawRect(ctx, pos_pixels, rot);
 
 	    if (!this.isStatic()) {
 		this._sprite._rot = -rot
 		this._sprite._pos = [pos_pixels.get_x(), pos_pixels.get_y()]
 		this._sprite.draw(ctx)
 	    }
+	    
+	    ctx.beginPath();
+	    ctx.lineWidth = 1;
+
+	    
+	    if (this.isStatic()) {
+		ctx.strokeStyle = 'black';
+	    } else {
+		ctx.strokeStyle = 'black';	    
+	    }
+
+	    if (this._sprite._imgBitmap == null) {
+		this.drawRect(ctx, pos_pixels, rot);
+	    }
+
 	}
     }
 
@@ -471,17 +473,19 @@ class Tbox2d_world
 		    let box = new Tbox([xCoord,yCoord], bWidth, bHeight, frame, isDynamic);
 		    this._fObjectList.push(box)
 
-		    
-		    var setBoxBitmap = function(bm) {
-			this._sprite._imgBitmap = bm		
-		    }
 
-		    let boundBitmapFunction = setBoxBitmap.bind(box)
+		    if (b._sprite._imgBitmap != null) {
+			var setBoxBitmap = function(bm) {
+			    this._sprite._imgBitmap = bm		
+			}
+
+			let boundBitmapFunction = setBoxBitmap.bind(box)
 	    
-		    // Extract the bitmap for this rect.
-		    //
-		    b._sprite.extractBitmap(spriteXCoord, spriteYCoord, spriteXCoord+bWidth, spriteYCoord+bHeight, boundBitmapFunction)
-		    
+			// Extract the bitmap for this rect.
+			//
+			b._sprite.extractBitmap(spriteXCoord, spriteYCoord, spriteXCoord+bWidth, spriteYCoord+bHeight, boundBitmapFunction)
+
+		    }
 		    xCoord       = xCoord       + bWidth
 		    spriteXCoord = spriteXCoord + bWidth
 		    
