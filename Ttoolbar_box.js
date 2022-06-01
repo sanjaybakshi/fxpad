@@ -1,9 +1,13 @@
 import Tdiv from "./Tdiv.js";
 import Ttoolbar_paint from "./Ttoolbar_paint.js";
+import Ttoolbar_xform from "./Ttoolbar_xform.js";
 
 
 class Ttoolbar_box extends Tdiv
 {
+    kPaintObject = 0
+    kXformObject = 1
+
     constructor(toolbar_boxId, canvas)
     {
 	super(toolbar_boxId)
@@ -16,9 +20,11 @@ class Ttoolbar_box extends Tdiv
 	this._deleteCtrl    = document.getElementById("deleteBoxId")
 
 	this._toolbar_paint = new Ttoolbar_paint("toolbar.paintId", this.donePainting_func.bind(this), canvas)
-
-	this.fCanvas = canvas
+	this._toolbar_xform = new Ttoolbar_xform("toolbar.xformId", this.donePainting_func.bind(this), canvas)	
 	
+	this.fCanvas = canvas
+
+
 	
 	this._penCtrl.addEventListener('click', (e) => {
 	    this.pencilClick(e)
@@ -60,7 +66,14 @@ class Ttoolbar_box extends Tdiv
 
     translateClick(e)
     {
-	console.log("translate click")
+	let pos = this.getPosition()
+	this.hide()
+
+	this._toolbar_xform.showAt(pos)
+	
+	// Put the canvas in paint mode.
+	//
+	this.fCanvas.setToolMode(this.fCanvas.kXformObject)
     }
 
     rotateClick(e)
@@ -103,10 +116,50 @@ class Ttoolbar_box extends Tdiv
 	if (this._toolbar_paint.isVisible()) {
 	    this._toolbar_paint.hide()
 	}
+
+	if (this._toolbar_xform.isVisible()) {
+	    this._toolbar_xform.hide()
+	}
     }
 
     isVisible() {
-	return (super.isVisible() || this._toolbar_paint.isVisible())
+	return (super.isVisible() || this._toolbar_paint.isVisible() || this._toolbar_xform.isVisible())
+    }
+
+
+    draw(ctx, objs) {
+	if (this.toolMode() == this.kXformObject) {
+	    this._toolbar_xform.draw(ctx, objs)
+	}
+    }
+
+    mouseDown(e, objs) {
+	if (this.toolMode() == this.kXformObject) {
+	    this._toolbar_xform.mouseDown(e, objs)
+	}
+	
+    }
+    mouseMove(e, objs) {
+	if (this.toolMode() == this.kXformObject) {
+	    this._toolbar_xform.mouseMove(e, objs)
+	}
+	
+    }
+    mouseUp(e, objs) {
+	if (this.toolMode() == this.kXformObject) {
+	    this._toolbar_xform.mouseUp(e, objs)
+	}
+	
+    }
+    
+    toolMode() {
+	if (this._toolbar_xform.isVisible()) {
+	    return this.kXformObject;
+	} else if (this._toolbar_paint.isVisible()) {
+	    return this.kPaintObject;
+	}
+
+	return null
     }
 }
 

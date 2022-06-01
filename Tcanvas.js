@@ -22,7 +22,8 @@ class Tcanvas
 
     kDrawObject  = 0
     kDrawTexture = 1
-
+    kXformObject = 2
+    
     
     constructor(canvasDocName) {
 	this.fCanvas  = document.getElementById(canvasDocName)
@@ -151,10 +152,17 @@ class Tcanvas
 	this.fContext.clearRect(0, 0, this._canvasWidth(), this._canvasHeight())
 	
 
-	this._box2dWorld.draw(this.fContext)
+	this._box2dWorld.draw(this.fContext, this._pauseAnim)
 
 	this.fCurrentStroke.draw(this.fContext)
 
+	if (this._pauseAnim) {
+	    if (this._toolMode == this.kXformObject) {
+		this._fToolbar_box.draw(this.fContext, [this._selectedObject])
+	    }
+	}
+
+	
 	// Test code to rotate an image.
 	//
 	//this._testSprite.draw(this.fContext)
@@ -177,6 +185,8 @@ class Tcanvas
 	    this.mouseDown_Object(e)
 	} else if (this._toolMode == this.kDrawTexture) {
 	    this.mouseDown_Texture(e)
+	} else if (this._toolMode == this.kXformObject) {
+	    this._fToolbar_box.mouseDown(e, [this._selectedObject])
 	}
     }
 
@@ -186,6 +196,8 @@ class Tcanvas
 	    this.mouseUp_Object(e)
 	} else if (this._toolMode == this.kDrawTexture) {
 	    this.mouseUp_Texture(e)
+	} else if (this._toolMode == this.kXformObject) {
+	    this._fToolbar_box.mouseUp(e,[this._selectedObject])
 	}
     }
 
@@ -195,6 +207,8 @@ class Tcanvas
 	    this.mouseMove_Object(e)
 	} else if (this._toolMode == this.kDrawTexture) {
 	    this.mouseMove_Texture(e)
+	} else if (this._toolMode == this.kXformObject) {
+	    this._fToolbar_box.mouseMove(e,[this._selectedObject])
 	}
     }
     
@@ -257,8 +271,6 @@ class Tcanvas
 	
     }
 
-
-
     mouseMove_Object(e)
     {
 	if (this._strokeStarted) {
@@ -287,7 +299,6 @@ class Tcanvas
 	    this.fCurrentStroke.push([x,y], touchInfo.pressure)
 	}
     }
-    
     mouseUp_Object(e)
     {
 	if (this._strokeStarted) {

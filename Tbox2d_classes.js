@@ -107,6 +107,21 @@ class Tbox
 	
     }
 
+    setPosition(newPos)
+    {
+	if (usePlanck) {
+	    this._v_pixels = planck.Vec2(newPos.x, newPos.y)
+	    let v_world = pixels2world_vec(this._v_pixels) 
+	    this._body.setPosition(v_world)
+
+	} else {
+	    this._v_pixels = new Box2D.b2Vec2(newPos.x, newPos.y)
+	    let v_world = pixels2world_vec(this._v_pixels) 
+	    this._body.setPosition(v_world)	    
+	}
+	
+    }
+    
     isStatic()
     {
 	if (usePlanck) {
@@ -175,7 +190,7 @@ class Tbox
     }
 
     
-    draw(ctx)
+    draw(ctx, paused)
     {
 	if (usePlanck) {
 	    let pos_world = this._body.getPosition();
@@ -191,14 +206,17 @@ class Tbox
 
 	    ctx.beginPath();
 	    ctx.lineWidth = .5;
-	    
 	    if (this.isStatic()) {
 		ctx.strokeStyle = 'black';
 	    } else {
 		ctx.strokeStyle = 'black';	    
 	    }
 
-	    if (this._sprite._imgBitmap == null) {
+	    if (!paused) {
+		if (this._sprite._imgBitmap == null) {
+		    this.drawRect(ctx, pos_pixels, rot);
+		}
+	    } else {
 		this.drawRect(ctx, pos_pixels, rot);
 	    }
 	    
@@ -223,10 +241,13 @@ class Tbox
 		ctx.strokeStyle = 'black';	    
 	    }
 
-	    if (this._sprite._imgBitmap == null) {
+	    if (!paused) {
+		if (this._sprite._imgBitmap == null) {
+		    this.drawRect(ctx, pos_pixels, rot);
+		}
+	    } else {
 		this.drawRect(ctx, pos_pixels, rot);
 	    }
-
 	}
     }
 
@@ -582,13 +603,13 @@ class Tbox2d_world
     }
 
     
-    draw(ctx)
+    draw(ctx, paused)
     {
 	for (const b of this._fObjectList) {	
 	    // Check to see if it's part of the world.
 	    //
 	    if (b.isBeingSimulated()) {
-		b.draw(ctx)
+		b.draw(ctx, paused)
 	    }
 	}
     }
