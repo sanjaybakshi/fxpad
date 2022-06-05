@@ -5,8 +5,9 @@ import Tevent       from "./Tevent.js";
 
 import Ttouch	    from "./Ttouch.js";
 
-import Ttoolbar_box from "./Ttoolbar_box.js";
-import TtextBox     from "./TtextBox.js";
+import Ttoolbar_objects from "./Ttoolbar_objects.js";
+import Ttoolbar_box     from "./Ttoolbar_box.js";
+import TtextBox         from "./TtextBox.js";
 
 
 class Tcanvas
@@ -23,6 +24,7 @@ class Tcanvas
     kDrawObject  = 0
     kDrawTexture = 1
     kXformObject = 2
+    kDrawJoint   = 3
     
     
     constructor(canvasDocName) {
@@ -45,8 +47,11 @@ class Tcanvas
 	this.fContext = this.fCanvas.getContext('2d')
 	//this.fContext.scale(ratio,ratio)
 	
-	this._fToolbar_box = new Ttoolbar_box("toolbar.boxId", this)
+	this._fToolbar_box     = new Ttoolbar_box("toolbar.boxId", this)
+	this._fToolbar_objects = new Ttoolbar_objects("toolbar.objectsId", this)	
 
+	this._fToolbar_objects.show()
+	
 	this._fTextBox = new TtextBox("dragDropWindow")
 
 	this._toolMode = this.kDrawObject;
@@ -157,8 +162,11 @@ class Tcanvas
 	this.fCurrentStroke.draw(this.fContext)
 
 	if (this._pauseAnim) {
-	    if (this._toolMode == this.kXformObject) {
-		this._fToolbar_box.draw(this.fContext, [this._selectedObject])
+
+	    if (!this._fToolbar_objects.draw(this.fContext)) {
+		if (this._toolMode == this.kXformObject) {
+		    this._fToolbar_box.draw(this.fContext, [this._selectedObject])
+		}
 	    }
 	}
 
@@ -174,6 +182,12 @@ class Tcanvas
 	this._lastFrameTime = TIME
 */
 
+	// Draw text for debugging.
+	//
+	this.fContext.font = '18px ' + 'Avenir'
+	this.fContext.textBaseline = 'top';
+	this.fContext.fillText('ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz Sanjay Dutt', 100,100)
+
 
 	window.requestAnimationFrame(this.draw);
 
@@ -181,34 +195,42 @@ class Tcanvas
 
     mouseDown(e)
     {
-	if (this._toolMode == this.kDrawObject) {
-	    this.mouseDown_Object(e)
-	} else if (this._toolMode == this.kDrawTexture) {
-	    this.mouseDown_Texture(e)
-	} else if (this._toolMode == this.kXformObject) {
-	    this._fToolbar_box.mouseDown(e, [this._selectedObject])
+	if (!this._fToolbar_objects.mouseDown(e)) {
+
+	    if (this._toolMode == this.kDrawObject) {
+		this.mouseDown_Object(e)
+	    } else if (this._toolMode == this.kDrawTexture) {
+		this.mouseDown_Texture(e)
+	    } else if (this._toolMode == this.kXformObject) {
+		this._fToolbar_box.mouseDown(e, [this._selectedObject])
+	    }
 	}
     }
 
     mouseUp(e)
     {
-	if (this._toolMode == this.kDrawObject) {
-	    this.mouseUp_Object(e)
-	} else if (this._toolMode == this.kDrawTexture) {
-	    this.mouseUp_Texture(e)
-	} else if (this._toolMode == this.kXformObject) {
-	    this._fToolbar_box.mouseUp(e,[this._selectedObject])
+	if (!this._fToolbar_objects.mouseUp(e)) {
+	    if (this._toolMode == this.kDrawObject) {
+		this.mouseUp_Object(e)
+	    } else if (this._toolMode == this.kDrawTexture) {
+		this.mouseUp_Texture(e)
+	    } else if (this._toolMode == this.kXformObject) {
+		this._fToolbar_box.mouseUp(e,[this._selectedObject])
+	    }
 	}
+
     }
 
     mouseMove(e)
     {
-	if (this._toolMode == this.kDrawObject) {
-	    this.mouseMove_Object(e)
-	} else if (this._toolMode == this.kDrawTexture) {
-	    this.mouseMove_Texture(e)
-	} else if (this._toolMode == this.kXformObject) {
-	    this._fToolbar_box.mouseMove(e,[this._selectedObject])
+	if (!this._fToolbar_objects.mouseMove(e)) {
+	    if (this._toolMode == this.kDrawObject) {
+		this.mouseMove_Object(e)
+	    } else if (this._toolMode == this.kDrawTexture) {
+		this.mouseMove_Texture(e)
+	    } else if (this._toolMode == this.kXformObject) {
+		this._fToolbar_box.mouseMove(e,[this._selectedObject])
+	    }
 	}
     }
     

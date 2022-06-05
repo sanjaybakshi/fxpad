@@ -41,10 +41,10 @@ class Tfont
 	let actualWidth  = 0
 	let actualHeight = 0
 
-	console.log("ffff: " + parseInt(inMemoryContext.font))
+	//console.log("ffff: " + parseInt(inMemoryContext.font))
 	
 	for (const w of words) {
-	    console.log("font func: " + w)
+	    //console.log("font func: " + w)
 
 	    let metrics    = inMemoryContext.measureText(w);
 	    //let wordWidth  = Math.abs(metrics.actualBoundingBoxLeft) + Math.abs(metrics.actualBoundingBoxRight)
@@ -61,7 +61,7 @@ class Tfont
 	    let rect = {'x': xPos, 'y': yPos, 'w': wordWidth, 'h': wordHeight}
 	    wordRects.push(rect)
 
-	    console.log(rect.w, rect.h)
+	    //console.log(rect.w, rect.h)
 	    
 	    xPos = xPos + wordWidth + spaceWidth
 

@@ -77,11 +77,11 @@ class Tbox
     _widthPixels;
     _heightPixels;
     _v_pixels;
-    _body;
     _existanceStart;
     _isDynamic;
     _sprite;
-    _body;
+
+    _body_b2d;
     
     constructor(pos, width, height, existanceStart, isDynamic=true)
     {
@@ -103,7 +103,7 @@ class Tbox
 
 	this._text = ""
 	this._fontSize = 16
-	this._fontName = "Georgia"
+	this._fontName = "Avenir"
 	
     }
 
@@ -112,33 +112,52 @@ class Tbox
 	if (usePlanck) {
 	    this._v_pixels = planck.Vec2(newPos.x, newPos.y)
 	    let v_world = pixels2world_vec(this._v_pixels) 
-	    this._body.setPosition(v_world)
+	    this._body_b2d.setPosition(v_world)
 
 	} else {
 	    this._v_pixels = new Box2D.b2Vec2(newPos.x, newPos.y)
 	    let v_world = pixels2world_vec(this._v_pixels) 
-	    this._body.setPosition(v_world)	    
+	    this._body_b2d.setPosition(v_world)	    
 	}
 	
     }
     
-    isStatic()
+    isDynamic()
     {
-	if (usePlanck) {
-	    return (this._body.getType() == 0)
-	} else {
-	    return (this._body.GetType() == 0)
-	}
+	return this._isDynamic
     }
 
+    setStatic()
+    {
+	this._isDynamic = false
+	
+	if (usePlanck) {
+	    if (this._body_b2d != null) {
+		this._body_b2d.setStatic()
+	    }
+	}
+	
+    }
+    
+    setDynamic()
+    {
+	this._isDynamic = true
+	
+	if (usePlanck) {
+	    if (this._body_b2d != null) {
+		this._body_b2d.setDynamic()
+	    }
+	}
+    }
+    
     removeFromSimulation()
     {
-	this._body = null
+	this._body_b2d = null
     }
 
     isBeingSimulated()
     {
-	return this._body != null
+	return this._body_b2d != null
     }
     
     addToSimulation(world)
@@ -148,6 +167,8 @@ class Tbox
 
 	    if (this._isDynamic) {
 		body.setDynamic()
+	    } else {
+		body.setStatic()
 	    }
 
 	    let v_world  = pixels2world_vec(this._v_pixels) 
@@ -167,7 +188,7 @@ class Tbox
 		I: 1
 	    });
 	    
-	    this._body = body
+	    this._body_b2d = body
 	} else {
 	    let bd = new Box2D.b2BodyDef();
 	    if (this._isDynamic) {
@@ -185,7 +206,7 @@ class Tbox
 	    shape.SetAsBox(w/2, h/2);
 	    body.CreateFixture(shape, 1.0);
 
-	    this._body = body
+	    this._body_b2d = body
 	}
     }
 
@@ -193,23 +214,24 @@ class Tbox
     draw(ctx, paused)
     {
 	if (usePlanck) {
-	    let pos_world = this._body.getPosition();
-	    let rot       = this._body.getAngle();
+	    let pos_world = this._body_b2d.getPosition();
+	    let rot       = this._body_b2d.getAngle();
 	    let pos_pixels = world2pixels_vec(pos_world)
 
 
-	    if (!this.isStatic()) {
+	    if (this.isDynamic()) {
 		this._sprite._rot = -rot
 		this._sprite._pos = [pos_pixels.x, pos_pixels.y]
+		//this._sprite._pos = [Math.floor(pos_pixels.x), Math.floor(pos_pixels.y)]		
 		this._sprite.draw(ctx)
 	    }
 
 	    ctx.beginPath();
 	    ctx.lineWidth = .5;
-	    if (this.isStatic()) {
+	    if (this.isDynamic()) {
 		ctx.strokeStyle = 'black';
 	    } else {
-		ctx.strokeStyle = 'black';	    
+		ctx.strokeStyle = 'grey';	    
 	    }
 
 	    if (!paused) {
@@ -221,11 +243,11 @@ class Tbox
 	    }
 	    
 	} else {
-	    let pos_world = this._body.GetPosition();
-	    let rot       = this._body.GetAngle();
+	    let pos_world = this._body_b2d.GetPosition();
+	    let rot       = this._body_b2d.GetAngle();
 	    let pos_pixels = world2pixels_vec(pos_world)
 
-	    if (!this.isStatic()) {
+	    if (this.isDynamic()) {
 		this._sprite._rot = -rot
 		this._sprite._pos = [pos_pixels.get_x(), pos_pixels.get_y()]
 		this._sprite.draw(ctx)
@@ -235,10 +257,10 @@ class Tbox
 	    ctx.lineWidth = 1;
 
 	    
-	    if (this.isStatic()) {
+	    if (this.isDynamic()) {
 		ctx.strokeStyle = 'black';
 	    } else {
-		ctx.strokeStyle = 'black';	    
+		ctx.strokeStyle = 'grey';	    
 	    }
 
 	    if (!paused) {
@@ -257,14 +279,14 @@ class Tbox
 
 	if (usePlanck) {
 	    // loop through all fixtures
-            for (let fixture = this._body.getFixtureList(); fixture; fixture = fixture.getNext()) {
+            for (let fixture = this._body_b2d.getFixtureList(); fixture; fixture = fixture.getNext()) {
  
 		if (fixture.testPoint(v_world)) {
                     return true;
 		}
 	    }
 	} else {
-	    let fList = this._body.GetFixtureList()
+	    let fList = this._body_b2d.GetFixtureList()
 
 	    while (fList["e"] != 0) {
 		
@@ -343,7 +365,7 @@ class Tbox
 	    // Probably should rotate the object and then find the center but
 	    // this is simpler for now.
 	    //
-	    let pos_world  = this._body.getPosition();
+	    let pos_world  = this._body_b2d.getPosition();
 	    let pos_pixels = world2pixels_vec(pos_world)
 	    
 	    let xCenter = pos_pixels.x
@@ -351,7 +373,7 @@ class Tbox
 	    
 	    return {x:xCenter, y:yCenter}
 	} else {
-	    let pos_world  = this._body.GetPosition();
+	    let pos_world  = this._body_b2d.GetPosition();
 	    let pos_pixels = world2pixels_vec(pos_world)
 	    
 	    let xCenter = pos_pixels.get_x()
@@ -372,6 +394,110 @@ class Tbox
     }
 }
 
+class Tjoint
+{
+    _box1;
+    _box1Pos;
+    _box2;
+    _box2Pos;
+    
+    _existanceStart;
+
+    _joint_b2d;
+    
+    constructor(b1, b1Pos, b2, b2Pos, existanceStart)
+    {
+	this._box1 = b1
+	this._box2 = b2
+	this._box1Pos = b1Pos
+	this._box2Pos = b2Pos
+	
+	this._existanceStart = existanceStart
+	
+	if (usePlanck) {
+	} else {
+	    //this._v_pixels = new Box2D.b2Vec2(pos[0], pos[1])
+	}
+    }
+
+    addToSimulation(world)
+    {
+	if (usePlanck) {
+
+	    var worldAnchorOnA = planck.Vec2(this._box1Pos.x, this._box1Pos.y)
+	    var worldAnchorOnB = planck.Vec2(this._box2Pos.x, this._box2Pos.y)
+
+	    worldAnchorOnA = pixels2world_vec(worldAnchorOnA)
+	    worldAnchorOnB = pixels2world_vec(worldAnchorOnB)
+
+	    console.log(worldAnchorOnA)
+	    console.log(worldAnchorOnB)
+
+	    //var anchor = planck.Vec2(this._box1._body_b2d.getPosition(),
+	    //this._box2._body_b2d.getPosition())
+	    //var anchor = planck.Vec2(b1Pos, b2Pos)
+	    //anchor.x = 0
+	    //anchor.y = 0
+	    //anchor = b1Pos - b2Pos
+	    //console.log(anchor)
+
+	    /*
+
+	    let j = world.createJoint(planck.RevoluteJoint({
+		collideConnected: false,
+	    }, this._box1._body_b2d, this._box2._body_b2d, anchor))
+	    */
+
+	    let j = world.createJoint(planck.DistanceJoint({
+		collideConnected: false,
+	    }, this._box1._body_b2d, this._box2._body_b2d, worldAnchorOnA, worldAnchorOnB))
+
+	    
+	    this._joint_b2d = j
+	}
+    }
+    
+    removeFromSimulation()
+    {
+	this._joint_b2d = null
+    }
+
+    isBeingSimulated()
+    {
+	return this._joint_b2d != null
+    }
+    
+    draw(ctx, paused)
+    {
+	if (usePlanck) {
+
+	    
+	    var a1 = world2pixels_vec(this._joint_b2d.getBodyA().getPosition())
+	    var a2 = world2pixels_vec(this._joint_b2d.getBodyB().getPosition())
+
+	    a1 = world2pixels_vec(this._joint_b2d.getAnchorA())
+	    a2 = world2pixels_vec(this._joint_b2d.getAnchorB())	    
+
+	    
+	    //let pos_pixels1 = world2pixels_vec(b1)
+	    //let pos_pixels2 = world2pixels_vec(b1)	    
+	    
+	    
+	    //let a1 = world2pixels_vec(this._joint_b2d.getAnchorA())
+	    //let a2 = world2pixels_vec(this._joint_b2d.getAnchorB())
+
+	    
+	    ctx.beginPath();
+	    ctx.lineWidth = .5;
+	    ctx.strokeStyle = 'grey';	    
+
+	    ctx.beginPath();
+	    ctx.moveTo(a1.x, a1.y)
+	    ctx.lineTo(a2.x, a2.y)
+	    ctx.stroke();
+	}
+    }
+}
 
 
 class Tbox2d_world
@@ -392,7 +518,8 @@ class Tbox2d_world
 	}
 
 
-	this._fObjectList   = []
+	this._fObjectList  = []
+	this._fJointList   = []
 
 	if (usePlanck) {
 	    this._fGravity = planck.Vec2(0, -10);
@@ -403,7 +530,7 @@ class Tbox2d_world
 	}
 	
 	this._defFontSize = 18
-	this._defFontName = "Georgia"
+	this._defFontName = "Avenir"
 
     }
     
@@ -580,12 +707,20 @@ class Tbox2d_world
 
 	    let xCoord = left + r.x + r.w/2
 	    let yCoord = top  + r.y + r.h/2
-	    //this.addBoxWithText( [xCoord,yCoord], r.w, frame, w, font="Georgia", fontSize=18, isDynamic=true)
+	    //this.addBoxWithText( [xCoord,yCoord], r.w, frame, w, font="Avenir", fontSize=18, isDynamic=true)
 	    this.addBoxWithText( [xCoord,yCoord], r.w, frame, w, font=font, fontSize=fontSize, isDynamic=true)
 
 
 	    //this.addBox([xCoord,yCoord], r.w, r.h, frame, isDynamic)
 	}
+    }
+
+
+    addJoint(box1, box1Pos, box2, box2Pos, frame)
+    {
+	console.log("ADDD JOINT")
+	let joint = new Tjoint(box1, box1Pos, box2, box2Pos, frame)
+	this._fJointList.push(joint)
     }
 
     
@@ -612,6 +747,14 @@ class Tbox2d_world
 		b.draw(ctx, paused)
 	    }
 	}
+
+	for (const j of this._fJointList) {	
+	    // Check to see if it's part of the world.
+	    //
+	    if (j.isBeingSimulated()) {
+		j.draw(ctx, paused)
+	    }
+	}
     }
 
     reset()
@@ -627,6 +770,10 @@ class Tbox2d_world
 	for (const b of this._fObjectList) {
 	    b.removeFromSimulation()	    
 	}
+
+	for (const j of this._fJointList) {
+	    j.removeFromSimulation()	    
+	}
 	
     }
     
@@ -635,6 +782,11 @@ class Tbox2d_world
         for (const b of this._fObjectList) {
 	    if (b._existanceStart == f) {
 		b.addToSimulation(this._fWorld)
+	    }
+	}
+        for (const j of this._fJointList) {
+	    if (j._existanceStart == f) {
+		j.addToSimulation(this._fWorld)
 	    }
 	}
     }

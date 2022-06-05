@@ -29,6 +29,11 @@ function fitToWindow()
 {
     fCanvas.fCanvas.width  = fCanvas.fCanvas.offsetWidth;
     fCanvas.fCanvas.height = fCanvas.fCanvas.offsetHeight;
+
+    fCanvas.fCanvas.style.width  = fCanvas.fCanvas.offsetWidth;
+    fCanvas.fCanvas.style.height = fCanvas.fCanvas.offsetHeight;
+
+    
 /*
     let pbsHeight = fPlaybackSlider._playBackCtrl.clientHeight
     console.log(pbsHeight)

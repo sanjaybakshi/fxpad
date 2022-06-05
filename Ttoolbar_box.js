@@ -83,7 +83,11 @@ class Ttoolbar_box extends Tdiv
 
     snapshotClick(e)
     {
-	console.log("snapshot click")
+	if (this.fCanvas._selectedObject.isDynamic()) {
+	    this.fCanvas._selectedObject.setStatic()
+	} else {
+	    this.fCanvas._selectedObject.setDynamic()
+	}
     }
 
     boxParamsClick(e)

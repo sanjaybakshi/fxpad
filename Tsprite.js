@@ -76,7 +76,10 @@ class Tsprite
 	    ctx.scale(this._scaleX, this._scaleY);
 
 	    
-	    ctx.drawImage(this._imgBitmap, (-this._imgBitmap.width / 2), (-this._imgBitmap.height / 2));	    	    ctx.restore()
+	    ctx.drawImage(this._imgBitmap,
+			  Math.floor(-this._imgBitmap.width  / 2),
+			  Math.floor(-this._imgBitmap.height / 2));
+	    ctx.restore()
 	}
     }
 
@@ -119,20 +122,20 @@ class Tsprite
 
     drawTextOnSprite(text, font, fontSize)
     {
-	console.log("draw text; " + text + " " + font + " " + fontSize)
-	
-	let inMemoryCanvas  = document.createElement("canvas")
+	//let inMemoryCanvas  = document.createElement("canvas")
+	//let inMemoryContext = inMemoryCanvas.getContext("2d");
+
+
+	let inMemoryCanvas = new OffscreenCanvas(this._widthInPixels, this._heightInPixels)
 	let inMemoryContext = inMemoryCanvas.getContext("2d");
+
 	
-	inMemoryCanvas.width  = this._widthInPixels
-	inMemoryCanvas.height = this._heightInPixels
-
-	inMemoryContext.textBaseline = 'top';	
 	inMemoryContext.font = fontSize + 'px ' + font
-
+	inMemoryContext.textBaseline = 'top';	
+	
 	let textBoxes = Tfont.wrapTextInBox(text, font, fontSize, this._widthInPixels)
 
-	console.log(textBoxes)
+	//console.log(textBoxes)
 	// Iterate over the words and draw them.
 	//
 	for (let i=0; i < textBoxes.words.length; i++) {
@@ -142,7 +145,8 @@ class Tsprite
 	    
 	    inMemoryContext.fillText(w, r.x, r.y);
 	}
-	this.canvas2bitmap(inMemoryCanvas)	
+	//this.canvas2bitmap(inMemoryCanvas)
+	this._imgBitmap = inMemoryCanvas.transferToImageBitmap()
     }
     
     canvas2bitmap(canvas)

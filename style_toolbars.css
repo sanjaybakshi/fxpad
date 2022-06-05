@@ -15,7 +15,12 @@
     grid-gap: .6em;
     padding: .3em;    
     border-radius: 5px;
-    //display: inline-grid;
+}
+
+.toolbar.objects {
+    position: absolute;
+    grid-template-columns: repeat(6, 1fr);
+    display: none;
 }
 
 .toolbar.box {
