@@ -3,7 +3,7 @@ import Tsprite from "./Tsprite.js";
 import Timage  from "./Timage.js";
 
 import Tfont	  from  "./Tfont.js"
-import TdrawUtils from "./Tdrawutils.js"
+import TdrawUtils from "./TdrawUtils.js"
 
 let fCanvasWidth  = 0
 let fCanvasHeight = 0
