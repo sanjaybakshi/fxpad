@@ -21,7 +21,6 @@ class Ttool_select extends Ttool
 	super.draw(ctx)
 	    
 	if (this._strokeStarted == true) {
-	    //console.log("in draw")
 
 	    ctx.lineWidth = 1.5;
 	    ctx.strokeStyle = 'red';
@@ -43,7 +42,6 @@ class Ttool_select extends Ttool
     }
     mouseDown(e)
     {
-	console.log("select-mouseDown")
 	super.mouseDown(e)
 
 	let touchInfo = Ttouch.getTouch(e)
@@ -70,8 +68,6 @@ class Ttool_select extends Ttool
 
     mouseUp(e)
     {
-	console.log("select->mouseUp")
-	console.log(e.target)
 	super.mouseUp(e)
 
 	let touchInfo = Ttouch.getTouch(e)
@@ -87,8 +83,6 @@ class Ttool_select extends Ttool
 	
 	let boxes = this.fCanvas._box2dWorld.intersectRect(this._posA.x, this._posA.y,
 							       this._posB.x, this._posB.y)
-	console.log("num boxes: " + boxes.length)
-	console.log(boxes)
 	
 	this.fCanvas._selectionList.replace(boxes)
     }

@@ -26,8 +26,6 @@ class Ttool_makeBox extends Ttool
     {
 	super.mouseDown(e)
 
-	console.log("moudeDown")
-	
 	let touchInfo = Ttouch.getTouch(e)
 	
 	let x = touchInfo.x
@@ -83,7 +81,6 @@ class Ttool_makeBox extends Ttool
 	}
 	this._strokeStarted = false
 
-	console.log("made the box")
     }
 }
 

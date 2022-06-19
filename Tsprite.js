@@ -62,8 +62,6 @@ class Tsprite
 	this._widthInPixels  = sizeInPixelsWidth
 	this._heightInPixels = sizeInPixelsHeight
 	
-	console.log(this._scaleX, this._scaleY)
-	
     }
 
     draw(ctx)

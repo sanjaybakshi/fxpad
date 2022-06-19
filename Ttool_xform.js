@@ -24,7 +24,6 @@ class Ttool_xform extends Ttool
 
     mouseDown(e)
     {
-	console.log("xform-mouseDown")
 	super.mouseDown(e)
 
 	if (this.fCanvas._selectionList._sList.length > 0) {
@@ -67,7 +66,6 @@ class Ttool_xform extends Ttool
 
     mouseUp(e)
     {
-	console.log("xform->mouseUp")
 	super.mouseUp(e)
 
 	this._boxManipColor = this._boxManipDefColor
