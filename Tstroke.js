@@ -7,16 +7,51 @@ class Tstroke
 	this._pointList    = []
 	this._pressureList = []
 
-	this._color = ""
+	this._color = "black"
 
 	this._brushWidth = 1
-	
+
+	/*
 	this.push = function(pt, pressure) {
 	    this._pointList.push(pt)
 	    this._pressureList.push(pressure)
 	}
+	*/
     }
 
+
+    
+    clone() {
+	let n = new Tstroke()
+
+	for (let i=0; i < this._pointList.length; i++) {
+
+	    let v = {x: this._pointList[i].x,
+		     y: this._pointList[i].y}
+	    
+	    n._pointList.push(v)
+
+	    let p = this._pressureList[i]
+	    n._pressureList.push(p)
+	}
+
+	n._color = this._color
+	n._brushWidth = this._brushWidth
+
+	return n
+    }
+
+
+    push()
+    {
+	console.log("SHIT DONT CALL THIS")	
+    }
+    
+    pushStrokePt(pt, pressure) {
+	this._pointList.push(pt)
+	this._pressureList.push(pressure)
+    }
+    
     clear()
     {
 	this._pointList    = []
@@ -44,9 +79,9 @@ class Tstroke
 
 
 	    ctx.beginPath()
-	    ctx.moveTo(pt1[0],pt1[1])
+	    ctx.moveTo(pt1.x,pt1.y)
 	    ctx.lineWidth = pr
-	    ctx.lineTo(pt2[0],pt2[1])
+	    ctx.lineTo(pt2.x,pt2.y)
 	    ctx.stroke();
 	    ctx.closePath()
 
@@ -66,17 +101,17 @@ class Tstroke
 	    return null
 	}
 	
-	let lo_x = this._pointList[0][0]
-	let lo_y = this._pointList[0][1]
-	let hi_x = this._pointList[0][0]
-	let hi_y = this._pointList[0][1]
+	let lo_x = this._pointList[0].x
+	let lo_y = this._pointList[0].y
+	let hi_x = this._pointList[0].x
+	let hi_y = this._pointList[0].y
 	
 	for (const p of this._pointList) {
 
-	    lo_x = Math.min(lo_x, p[0])
-	    lo_y = Math.min(lo_y, p[1])
-	    hi_x = Math.max(hi_x, p[0])
-	    hi_y = Math.max(hi_y, p[1])
+	    lo_x = Math.min(lo_x, p.x)
+	    lo_y = Math.min(lo_y, p.y)
+	    hi_x = Math.max(hi_x, p.x)
+	    hi_y = Math.max(hi_y, p.y)
 	}
 
 	let width  = hi_x - lo_x;
@@ -90,8 +125,8 @@ class Tstroke
     translate(vx, vy)
     {
 	for (let i=0; i < this._pointList.length; i++) {
-	    this._pointList[i][0] = this._pointList[i][0] - vx
-	    this._pointList[i][1] = this._pointList[i][1] - vy
+	    this._pointList[i].x = this._pointList[i].x - vx
+	    this._pointList[i].y = this._pointList[i].y - vy
 	}
 	
     }

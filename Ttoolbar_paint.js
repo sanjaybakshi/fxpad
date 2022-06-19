@@ -12,6 +12,7 @@ class Ttoolbar_paint extends Tdiv
 	this._callOnDismissFn = callOnDismissFn
 	
 	this._strokeWidthCtrl   = document.getElementById("strokeWidthId")
+
 	this._strokeColorCtrl   = document.getElementById("strokeColorId")
 	this._strokeDismissCtrl = document.getElementById("strokeDismissId")
 
@@ -23,7 +24,15 @@ class Ttoolbar_paint extends Tdiv
 	this._strokeWidthCtrl.addEventListener('click', (e) => {
 	    this.strokeWidthClick(e)
 	});
+	this._strokeWidthCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
 
+	this._strokeWidthCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+
+	
 	this._strokeColorCtrl.addEventListener('click', (e) => {
 	    this.strokeColorClick(e)
 	});
@@ -41,11 +50,13 @@ class Ttoolbar_paint extends Tdiv
     
     strokeWidthClick(e)
     {
+	console.log("strokeWidthClick")
 	let r = this._div.getBoundingClientRect()
 	let posX = r.left
 	let posY = r.bottom
 	
-	this._params_strokeWidth.toggleDisplayAt([posX,posY])	
+	//this._params_strokeWidth.toggleDisplayAt([posX,posY])
+	this._params_strokeWidth.showAt([posX,posY])		
     }
 
     strokeColorClick(e)

@@ -2,73 +2,184 @@ import Tdiv         from "./Tdiv.js";
 import TdrawUtils   from "./TdrawUtils.js";
 import Ttouch       from "./Ttouch.js";
 
+import Ttool_makeBox   from "./Ttool_makeBox.js";
+import Ttool_makeJoint from "./Ttool_makeJoint.js";
+import Ttool_select    from "./Ttool_select.js";
+import Ttool_xform     from "./Ttool_xform.js";
+import Ttool_paint     from "./Ttool_paint.js";
+
 class Ttoolbar_objects extends Tdiv
 {
-
-    kDrawBox     = 0
-    kDrawCircle  = 1
-    kDrawJoint   = 2
-    
     constructor(toolbar_objectsId, canvas)
     {
 	super(toolbar_objectsId)
 
-	this._drawBoxCtrl    = document.getElementById("drawBoxId")
+	this._selectCtrl     = document.getElementById("selectId")	
+	this._makeBoxCtrl    = document.getElementById("drawBoxId")
 	this._drawCircleCtrl = document.getElementById("drawCircleId")
 	this._drawJointCtrl  = document.getElementById("drawJointId")
-	
+	this._xformCtrl      = document.getElementById("xformId")
+	this._paintCtrl      = document.getElementById("paintId")
+
+	this._makeBoxTool = new Ttool_makeBox(canvas)	
+	this._jointTool   = new Ttool_makeJoint(canvas)
+	this._selectTool  = new Ttool_select(canvas)
+	this._xformTool   = new Ttool_xform(canvas)
+	this._paintTool   = new Ttool_paint(canvas)	
+
+	this._currentTool = this._makeBoxTool
 	
 	this.fCanvas = canvas
 
-	this._box1          = null
-	this._box2          = null
-	this._strokeStarted = false
+	this._posA          = null
+	this._posB          = null
 
-	this._box1Pos       = null
-	this._box2Pos       = null
+	this._selectedObjs  = null
 	
-	this._mouseMovPos = null
 	this.hide()	
 
-
-	this._drawBoxCtrl.addEventListener('click', (e) => {
+	this._selectCtrl.addEventListener('click', (e) => {
 	    this.toolChange(e)
 	});
+	this._selectCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._selectCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+
+	
+	this._makeBoxCtrl.addEventListener('click', (e) => {
+	    this.toolChange(e)
+	});
+	this._makeBoxCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._makeBoxCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+
+	
 	this._drawCircleCtrl.addEventListener('click', (e) => {
 	    this.toolChange(e)
 	});
+	this._drawCircleCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._drawCircleCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+	
 	this._drawJointCtrl.addEventListener('click', (e) => {
 	    this.toolChange(e)
 	});
+	this._drawJointCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._drawJointCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+	
+	this._xformCtrl.addEventListener('click', (e) => {
+	    this.toolChange(e)
+	});
+	this._xformCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._xformCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
 
+	this._paintCtrl.addEventListener('click', (e) => {
+	    this.toolChange(e)
+	});
+	this._paintCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._paintCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+
+	
 	this._toolMode = this.kDrawBox;
-	this._drawBoxCtrl.style.backgroundColor    = "darkgray";
+	this._makeBoxCtrl.style.backgroundColor    = "darkgray";
     }
 
     toolChange(e)
     {
-	console.log("tool change")
-
-	if (e.target.id == "drawBoxId") {
-	    this._drawBoxCtrl.style.backgroundColor    = "darkgray";
+	console.log("toolChange")
+	this._currentTool.dismiss()
+	
+	if (e.target.id == "selectId") {
+	    this._selectCtrl.style.backgroundColor     = "darkgray";	    
+	    this._makeBoxCtrl.style.backgroundColor    = "gainsboro";
 	    this._drawCircleCtrl.style.backgroundColor = "gainsboro";
 	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
+	    this._xformCtrl.style.backgroundColor      = "gainsboro";
+	    this._paintCtrl.style.backgroundColor      = "gainsboro";
+	    
+	    this._toolMode = this.kSelect
+	    this._currentTool = this._selectTool
+	    
+	} else if (e.target.id == "drawBoxId") {
+	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    	    
+	    this._makeBoxCtrl.style.backgroundColor    = "darkgray";
+	    this._drawCircleCtrl.style.backgroundColor = "gainsboro";
+	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
+	    this._xformCtrl.style.backgroundColor      = "gainsboro";
+	    this._paintCtrl.style.backgroundColor      = "gainsboro";
 
-	    this._toolMode = this.kDrawBox	    
+	    console.log("switched to makeBox")
+	    this._toolMode = this.kMakeBox
+	    this._currentTool = this._makeBoxTool
+
 	} else if (e.target.id == "drawCircleId") {
-	    this._drawBoxCtrl.style.backgroundColor    = "gainsboro";
+	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    	    
+	    this._makeBoxCtrl.style.backgroundColor    = "gainsboro";
 	    this._drawCircleCtrl.style.backgroundColor = "darkgray";
 	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
-
+	    this._xformCtrl.style.backgroundColor      = "gainsboro";
+	    this._paintCtrl.style.backgroundColor      = "gainsboro";
+	    
 	    this._toolMode = this.kDrawCircle
+
 	} else if (e.target.id == "drawJointId") {
-	    this._drawBoxCtrl.style.backgroundColor    = "gainsboro";
+	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
+	    this._makeBoxCtrl.style.backgroundColor    = "gainsboro";
 	    this._drawCircleCtrl.style.backgroundColor = "gainsboro";
 	    this._drawJointCtrl.style.backgroundColor  = "darkgray";
-
+	    this._xformCtrl.style.backgroundColor      = "gainsboro";
+	    this._paintCtrl.style.backgroundColor      = "gainsboro";	    
+	    
 	    this._toolMode = this.kDrawJoint	    
+
+	    this._currentTool = this._jointTool
+	} else if (e.target.id == "xformId") {
+	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
+	    this._makeBoxCtrl.style.backgroundColor    = "gainsboro";
+	    this._drawCircleCtrl.style.backgroundColor = "gainsboro";
+	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
+	    this._xformCtrl.style.backgroundColor      = "darkgray";
+	    this._paintCtrl.style.backgroundColor      = "gainsboro";
+	    
+	    this._toolMode = this.kXform
+
+	    this._currentTool = this._xformTool
+	} else if (e.target.id == "paintId") {
+	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
+	    this._makeBoxCtrl.style.backgroundColor    = "gainsboro";
+	    this._drawCircleCtrl.style.backgroundColor = "gainsboro";
+	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
+	    this._xformCtrl.style.backgroundColor      = "gainsboro";
+	    this._paintCtrl.style.backgroundColor      = "darkgray";
+	    
+	    this._toolMode = this.kPaint
+
+	    this._currentTool = this._paintTool
 	}
 
+	this._currentTool.engage()
+	
 	e.stopPropagation()
     }
     
@@ -80,114 +191,22 @@ class Ttoolbar_objects extends Tdiv
 
     draw(ctx)
     {
-	if (this._toolMode == this.kDrawJoint) {
-	
-	    if (this._strokeStarted == true) {
-
-		if (this._box1 != null) {
-		    //let center = this._box1.getCenterInPixels()
-
-		    let center = this._box1Pos
-		    
-		    ctx.lineWidth = 1.5;
-		    
-		    ctx.strokeStyle = 'red';
-		    ctx.beginPath();
-		    ctx.moveTo(center.x, center.y);
-		    ctx.lineTo(this._mouseMovPos.x, this._mouseMovPos.y)
-		    ctx.stroke();	
-		}
-	    }
-	    return true
-	}
-
-	return false
+	this._currentTool.draw(ctx)
     }
+
 
     mouseDown(e)
     {
-	if (this._toolMode == this.kDrawJoint) {
-
-	    let touchInfo = Ttouch.getTouch(e)
-
-	    let x = touchInfo.x
-	    let y = touchInfo.y
-	    
-	    let b = this.fCanvas._box2dWorld.intersects([x,y])
-	
-	    if (b != null) {
-		// starting to make a joint.
-		//
-		this._box1 = b
-		this._box1Pos = {x:x,y:y}
-		
-		this._strokeStarted = true
-	    }
-	    
-	    return true;
-	}
-
-	return false
+	this._currentTool.mouseDown(e)
     }
     mouseMove(e)
     {
-	if (this._toolMode == this.kDrawJoint) {
-
-	    let touchInfo = Ttouch.getTouch(e)
-	    
-	    let x = touchInfo.x
-	    let y = touchInfo.y
-
-	    this._mouseMovPos = {x:x,y:y}
-	    
-	    return true;
-	}
-
-	return false
+	this._currentTool.mouseMove(e)	
     }
     
     mouseUp(e)
     {
-	if (this._toolMode == this.kDrawJoint) {
-
-	    let touchInfo = Ttouch.getTouch(e)
-	    
-	    let x = touchInfo.x
-	    let y = touchInfo.y
-	    
-	    let b = this.fCanvas._box2dWorld.intersects([x,y])
-	    
-	    if (b != null && b != this._box1) {
-		// starting to make a joint.
-		//
-		this._box2 = b
-		this._box2Pos = {x:x, y:y}
-		
-		// Construct a joint.
-		//
-		let cf = this.fCanvas.getCurrentFrame()
-		this.fCanvas._box2dWorld.addJoint(this._box1, this._box1Pos,
-						  this._box2, this._box2Pos,
-						  cf)
-
-		// Hack to refresh. Need a better mechanism.
-		//
-		if (this.fCanvas._pauseAnim) {
-		    this.fCanvas.setFrame(this.fCanvas._currentFrame)
-		    console.log("doing the joint")
-		    
-		}
-	    }
-
-
-	    this._strokeStarted = false
-	    this._box1 = null
-	    this._box2 = null
-	    
-	    return true;
-	}
-
-	return false
+	this._currentTool.mouseUp(e)		
     }
 
 }

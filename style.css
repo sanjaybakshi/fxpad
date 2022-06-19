@@ -32,8 +32,6 @@ canvas {
     height: 85%;
     //background-color: lightyellow;
     background-color: white;
-
-//    z-index: 0;
 }
 
 .brushWidthBtn {

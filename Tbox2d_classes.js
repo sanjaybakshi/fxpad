@@ -2,7 +2,8 @@ import Tmath   from "./Tmath.js";
 import Tsprite from "./Tsprite.js";
 import Timage  from "./Timage.js";
 
-import Tfont   from  "./Tfont.js"
+import Tfont	  from  "./Tfont.js"
+import TdrawUtils from "./Tdrawutils.js"
 
 let fCanvasWidth  = 0
 let fCanvasHeight = 0
@@ -71,6 +72,17 @@ function world2pixels_vec(v)
     }
 }
 
+function pixels2world_rect(left, top, right, bottom)
+{
+    if (usePlanck) {
+	// swap bottom and top
+	//
+	let ub = pixels2world_vec(planck.Vec2(left, bottom))
+	let lb = pixels2world_vec(planck.Vec2(right, top))
+
+	return {x1: ub.x, y1: ub.y, x2: lb.x, y2: lb.y}
+    }
+}
 
 class Tbox
 {
@@ -211,7 +223,7 @@ class Tbox
     }
 
     
-    draw(ctx, paused)
+    draw(ctx, paused, isSelected=false)
     {
 	if (usePlanck) {
 	    let pos_world = this._body_b2d.getPosition();
@@ -227,7 +239,13 @@ class Tbox
 	    }
 
 	    ctx.beginPath();
-	    ctx.lineWidth = .5;
+
+	    if (isSelected == true) {
+		ctx.lineWidth = 1.5;
+	    } else {
+		ctx.lineWidth = 0.5;
+	    }
+	    
 	    if (this.isDynamic()) {
 		ctx.strokeStyle = 'black';
 	    } else {
@@ -298,7 +316,36 @@ class Tbox
 	    }
 	}
     }
-    
+
+    intersectRect(rect)
+    //
+    // Description:
+    //	    Tests if the box is in the rectangle.
+    //
+
+    {
+	if (usePlanck) {
+	    // loop through all fixtures
+            for (let fixture = this._body_b2d.getFixtureList(); fixture; fixture = fixture.getNext()) {
+
+		let shape = fixture.getShape();
+
+		let numChildren = shape.getChildCount()
+		
+		for (let i=0; i < numChildren; i++) {
+		    let aabb = fixture.getAABB(i)
+
+		    let boxRect = {x1: aabb.lowerBound.x, y1: aabb.lowerBound.y,
+				   x2: aabb.upperBound.x, y2: aabb.upperBound.y}
+		    
+		    
+		    return TdrawUtils.overlaps(rect, boxRect)
+		}
+	    }
+	}
+	return false
+    }
+
     drawRect(ctx, p_pixels, angle)
     {
 	if (usePlanck) {
@@ -353,10 +400,13 @@ class Tbox
 	let bCenter = this.getCenterInPixels()
 	let left = bCenter.x - this._widthPixels/2
 	let top  = bCenter.y - this._heightPixels/2
+
+	// Need to clone this as translating will affect stroke
+	//
+	let s = stroke.clone()
+	s.translate(left, top)
 	
-	stroke.translate(left, top)
-	
-	this._sprite.drawStrokeOnSprite(stroke)
+	this._sprite.drawStrokeOnSprite(s)
     }
 
     getCenterInPixels()
@@ -823,6 +873,32 @@ class Tbox2d_world
 
     }
 
+    intersectRect(left, top, right, bottom)
+    //
+    // Description:
+    //	    Tests which boxes are in the rectangle defined by (left,top,right,bottom)
+    //
+    {
+	let p1 = pixels2world_vec(planck.Vec2(left, top))
+	let p2 = pixels2world_vec(planck.Vec2(right, bottom))
+
+	let r1 = pixels2world_rect(left, top, right, bottom)
+
+	let boxes = []
+	if (usePlanck) {
+            for (const b of this._fObjectList) {		
+		if (b.isBeingSimulated()) {
+
+		    if (b.intersectRect(r1)) {
+			boxes.push(b)
+		    }
+		    
+		}
+	    }
+	} 
+	return boxes
+    }
+    
     deleteBox(b)
     {
 	b.removeFromSimulation()
