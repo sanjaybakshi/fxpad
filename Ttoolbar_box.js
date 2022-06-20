@@ -65,23 +65,29 @@ class Ttoolbar_box extends Tdiv
 
     boxParamsClick(e)
     {
-	console.log("boxParams click")
-
+	let newBoxes = []
 	for (const obj of this.fCanvas._selectionList._sList) {
-	    this.fCanvas._box2dWorld.split(obj, this.fCanvas.getCurrentFrame())
-	    console.log("calledsplit")
+	    let bxs = this.fCanvas._box2dWorld.split(obj, this.fCanvas.getCurrentFrame())
+
+	    for (const b of bxs) {
+		newBoxes.push(b)
+	    }
 	}
 
 	for (const obj of this.fCanvas._selectionList._sList) {
 	    this.fCanvas._box2dWorld.deleteBox(obj)
 	}
 	
-	this.fCanvas._selectionList.clear()
 
 	// Have to do this so the newly created boxed gets added to the simulation.
 	// kind of a hack.
 	//
 	this.fCanvas.setFrame(this.fCanvas.getCurrentFrame())
+
+	// Need to call this here (not right after creating it because it won't be fully
+	// construcuted until setFrame is called.
+	//	
+	this.fCanvas._selectionList.replace(newBoxes)	
     }
 
     deleteClick(e)

@@ -219,9 +219,12 @@ class Tcanvas
 
 	console.log("url: " + url)
 
+	let newBoxArray = []
+	
 	if (url) {
 	    let center = [e.offsetX, e.offsetY]
-	    this._box2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
+	    let newBox = this._box2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
+	    //newBoxArray.push(newBox)
 	} else {
 	    console.log("no url")
 
@@ -231,34 +234,20 @@ class Tcanvas
 	    
 	    //this._fTextBox.showAt([e.offsetX, e.offsetY])
 	    droppedText = droppedText.trim()
-	    this._box2dWorld.addBoxWithText(center, 300, this.getCurrentFrame(), droppedText)
-
-	    
+	    let newBox = this._box2dWorld.addBoxWithText(center, 300, this.getCurrentFrame(), droppedText)
+	    newBoxArray.push(newBox)	    
 	}
 
-	/*
-	for (const f of fileList) {
-
-	    let center = [e.offsetX, e.offsetY]
-	    let width  = 100
-	    let height = 100
-
-
-	    this._box2dWorld.addBoxWithTexture(center, width, height, this.getCurrentFrame(), f.name)
-	    //this._box2dWorld.addBox(center, width, height, this.getCurrentFrame())
-
-	    console.log(f.name)
-	    
-	}
-	*/
-
-
-	
 	// Have to do this so the box gets added to the simulation.
 	// kind of a hack.
 	//
 	if (this._pauseAnim) {
 	    this.setFrame(this._currentFrame)
+
+	    // Need to call this here (not right after creating it because it won't be fully
+	    // construcuted until setFrame is called.
+	    //
+	    this._selectionList.replace(newBoxArray)	    
 	}
     }
 
@@ -361,28 +350,6 @@ class Tcanvas
     pauseAnim()
     {
 	this._pauseAnim = true
-    }
-
-    splitSelectedBox()
-    {
-	console.log("about to split " + this._selectedObject._text)
-
-	this._box2dWorld.split(this._selectedObject, this.getCurrentFrame())
-	    
-	this.deleteSelectedBox()
-
-
-	// Have to do this so the box gets added to the simulation.
-	// kind of a hack.
-	//
-	if (this._pauseAnim) {
-	    this.setFrame(this._currentFrame)
-	}
-    }
-    
-    setToolMode(m)
-    {
-	this._toolMode = m
     }
 
     selectionListChanged()

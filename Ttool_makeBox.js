@@ -56,6 +56,7 @@ class Ttool_makeBox extends Ttool
     {
 	super.mouseUp(e)
 
+	let newBoxArray = []
 	if (this._strokeStarted) {
 	    // Figure out the box.
 	    //
@@ -64,8 +65,13 @@ class Ttool_makeBox extends Ttool
 		let center = box['center'];
 		let width  = box['width'];
 		let height = box['height'];
-		
-		this.fCanvas._box2dWorld.addBox(center, width, height, this.fCanvas.getCurrentFrame())
+
+		// Only make the box if it's big enough.
+		//
+		if (width > 5 && height > 5) {
+		    let newBox = this.fCanvas._box2dWorld.addBox(center, width, height, this.fCanvas.getCurrentFrame())
+		    newBoxArray.push(newBox)
+		}
 	    }
 	    
 	    // Reset the stroke.
@@ -76,6 +82,14 @@ class Ttool_makeBox extends Ttool
 	    //
 	    if (this.fCanvas._pauseAnim) {
 		this.fCanvas.setFrame(this.fCanvas._currentFrame)
+
+		// Need to call this here (not right after creating it because it won't be fully
+		// construcuted until setFrame is called.
+		//
+		if (newBoxArray.length > 0) {
+		    this.fCanvas._selectionList.replace(newBoxArray)
+		}
+		
 	    }
 
 	}

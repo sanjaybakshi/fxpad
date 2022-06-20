@@ -588,6 +588,8 @@ class Tbox2d_world
     {
 	let box = new Tbox(pos, width, height, frame, isDynamic);
 	this._fObjectList.push(box)
+
+	return box
     }
 
     addBoxWithTexture(pos, frame, textureFilename, isDynamic=true)
@@ -638,14 +640,16 @@ class Tbox2d_world
 	this._fObjectList.push(box)
 
 	box._sprite.drawTextOnSprite(text, font, fontSize)
+
+	return box
     }
 
 
     split(b, frame, isDynamic=true)
     {
-	console.log(b._text)
+	let retBoxes = []
 	if (b._text != "") {
-	    this.splitIntoWordBoxes(b, frame, isDynamic)
+	    retBoxes = this.splitIntoWordBoxes(b, frame, isDynamic)
 	} else {
 	    let boxCenter = b.getCenterInPixels()
 	    let left = boxCenter.x - b._widthPixels/2
@@ -671,6 +675,7 @@ class Tbox2d_world
 		    let box = new Tbox([xCoord,yCoord], bWidth, bHeight, frame, isDynamic);
 		    this._fObjectList.push(box)
 
+		    retBoxes.push(box)
 
 		    if (b._sprite._imgBitmap != null) {
 			var setBoxBitmap = function(bm) {
@@ -695,10 +700,14 @@ class Tbox2d_world
 		spriteYCoord = spriteYCoord + bHeight
 	    }
 	}
+
+	return retBoxes
     }
     
     splitIntoWordBoxes(b, frame, isDynamic=true)
     {
+	let retBoxes = []
+	
 	if (b._text == "") {
 	    return
 	}
@@ -722,6 +731,8 @@ class Tbox2d_world
 	    let box = new Tbox([centerX,centerY], r.w, r.h, frame, isDynamic);
 	    this._fObjectList.push(box)
 
+	    retBoxes.push(box)
+	    
 	    var setBoxBitmap = function(bm) {
 		this._sprite._imgBitmap = bm		
 	    }
@@ -732,6 +743,8 @@ class Tbox2d_world
 	    //
 	    b._sprite.extractBitmap(r.x, r.y, r.x+r.w, r.y+r.h, boundBitmapFunction)
 	}
+
+	return retBoxes
     }
 
     addWordBoxesWithText(pos, width, height, frame, text, font=this._defFontName, fontSize=this._defFontSize, isDynamic=true)
