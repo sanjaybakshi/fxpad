@@ -5,12 +5,14 @@ import Tstroke from "./Tstroke.js";
 
 class Ttool_makeBox extends Ttool
 {
-    constructor(canvas)
+    constructor(canvas, toolButton)
     {
 	super()
 	this.fCanvas = canvas
 	this._strokeStarted = false
-	this.fCurrentStroke = new Tstroke()	
+	this.fCurrentStroke = new Tstroke()
+
+	this._toolButton = toolButton
     }
 
     draw(ctx)

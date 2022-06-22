@@ -4,12 +4,13 @@ import Ttouch  from "./Ttouch.js";
 class Ttool_makeJoint extends Ttool
 {
     
-    constructor(canvas)
+    constructor(canvas, toolButton)
     {
 	super()
 
 	this.fCanvas = canvas
-
+	this._toolButton = toolButton
+	
 	this._box1          = null
 	this._box2          = null
 	this._strokeStarted = false

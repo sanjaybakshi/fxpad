@@ -6,12 +6,13 @@ import TdrawUtils from "./TdrawUtils.js";
 class Ttool_xform extends Ttool
 {
     
-    constructor(canvas)
+    constructor(canvas, toolButton)
     {
 	super()
 
 	this.fCanvas = canvas
-
+	this._toolButton = toolButton
+	
 	this._boxManipSize     = 20
 
 	this._boxManipDefColor  = 'red'

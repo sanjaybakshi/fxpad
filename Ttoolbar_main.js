@@ -8,11 +8,11 @@ import Ttool_select    from "./Ttool_select.js";
 import Ttool_xform     from "./Ttool_xform.js";
 import Ttool_paint     from "./Ttool_paint.js";
 
-class Ttoolbar_objects extends Tdiv
+class Ttoolbar_main extends Tdiv
 {
-    constructor(toolbar_objectsId, canvas)
+    constructor(toolbar_mainId, canvas)
     {
-	super(toolbar_objectsId)
+	super(toolbar_mainId)
 
 	this._selectCtrl     = document.getElementById("selectId")	
 	this._makeBoxCtrl    = document.getElementById("drawBoxId")
@@ -21,11 +21,11 @@ class Ttoolbar_objects extends Tdiv
 	this._xformCtrl      = document.getElementById("xformId")
 	this._paintCtrl      = document.getElementById("paintId")
 
-	this._makeBoxTool = new Ttool_makeBox(canvas)	
-	this._jointTool   = new Ttool_makeJoint(canvas)
-	this._selectTool  = new Ttool_select(canvas)
-	this._xformTool   = new Ttool_xform(canvas)
-	this._paintTool   = new Ttool_paint(canvas)	
+	this._makeBoxTool = new Ttool_makeBox  (canvas, this._makeBoxCtrl)	
+	this._jointTool   = new Ttool_makeJoint(canvas, this._drawJointCtrl)
+	this._selectTool  = new Ttool_select   (canvas, this._selectCtrl)
+	this._xformTool   = new Ttool_xform    (canvas, this._xformCtrl)
+	this._paintTool   = new Ttool_paint    (canvas, this._paintCtrl)	
 
 	this._currentTool = this._makeBoxTool
 	
@@ -100,8 +100,6 @@ class Ttoolbar_objects extends Tdiv
 	    e.stopPropagation()
 	});
 
-	
-	this._toolMode = this.kDrawBox;
 	this._makeBoxCtrl.style.backgroundColor    = "darkgray";
     }
 
@@ -118,7 +116,6 @@ class Ttoolbar_objects extends Tdiv
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
 	    
-	    this._toolMode = this.kSelect
 	    this._currentTool = this._selectTool
 	    
 	} else if (e.target.id == "drawBoxId") {
@@ -129,8 +126,6 @@ class Ttoolbar_objects extends Tdiv
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
 
-	    console.log("switched to makeBox")
-	    this._toolMode = this.kMakeBox
 	    this._currentTool = this._makeBoxTool
 
 	} else if (e.target.id == "drawCircleId") {
@@ -141,8 +136,6 @@ class Ttoolbar_objects extends Tdiv
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
 	    
-	    this._toolMode = this.kDrawCircle
-
 	} else if (e.target.id == "drawJointId") {
 	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
 	    this._makeBoxCtrl.style.backgroundColor    = "gainsboro";
@@ -151,8 +144,6 @@ class Ttoolbar_objects extends Tdiv
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";	    
 	    
-	    this._toolMode = this.kDrawJoint	    
-
 	    this._currentTool = this._jointTool
 	} else if (e.target.id == "xformId") {
 	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
@@ -162,8 +153,6 @@ class Ttoolbar_objects extends Tdiv
 	    this._xformCtrl.style.backgroundColor      = "darkgray";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
 	    
-	    this._toolMode = this.kXform
-
 	    this._currentTool = this._xformTool
 	} else if (e.target.id == "paintId") {
 	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
@@ -173,11 +162,10 @@ class Ttoolbar_objects extends Tdiv
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "darkgray";
 	    
-	    this._toolMode = this.kPaint
-
 	    this._currentTool = this._paintTool
 	}
 
+			 
 	this._currentTool.engage()
 	
 	e.stopPropagation()
@@ -186,6 +174,8 @@ class Ttoolbar_objects extends Tdiv
     hide()
     {
 	super.hide()
+
+	this._currentTool.hideToolbars()
     }
 
 
@@ -212,4 +202,4 @@ class Ttoolbar_objects extends Tdiv
 }
 
 
-export default Ttoolbar_objects
+export default Ttoolbar_main

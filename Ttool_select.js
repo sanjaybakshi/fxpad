@@ -5,12 +5,13 @@ import Ttouch from "./Ttouch.js";
 class Ttool_select extends Ttool
 {
     
-    constructor(canvas)
+    constructor(canvas, toolButton)
     {
 	super()
 
 	this.fCanvas = canvas
-
+	this._toolButton = toolButton
+	
 	this._posA          = null
 	this._posB          = null
 	this._strokeStarted = false

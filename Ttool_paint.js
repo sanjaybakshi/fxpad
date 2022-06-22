@@ -8,19 +8,33 @@ import Ttoolbar_paint from "./Ttoolbar_paint.js";
 class Ttool_paint extends Ttool
 {
     
-    constructor(canvas)
+    constructor(canvas, toolButton)
     {
 	super()
 
 	this.fCanvas = canvas
+	this._toolButton = toolButton
+	
 	this.fCurrentStroke = new Tstroke()
 
-	this._toolbar_paint = new Ttoolbar_paint("toolbar.paintId", null, canvas)
+	let bound_colorChange = this.colorChange.bind(this)
+	let bound_widthChange = this.widthChange.bind(this)
+	this._toolbar_paint = new Ttoolbar_paint("toolbar.paintId", null, bound_colorChange, bound_widthChange)
 	
 	
 	this._strokeStarted = false
     }
 
+    colorChange(newColor)
+    {
+	this.fCurrentStroke._color = newColor
+    }
+
+    widthChange(newWidth)
+    {
+	this.fCurrentStroke._brushWidth = newWidth
+    }
+    
     mouseDown(e)
     {
 	console.log("paint-mouseDown")
@@ -99,12 +113,23 @@ class Ttool_paint extends Ttool
 	if (this.fCanvas._selectionList._sList.length > 0) {
 	    //let pos = this.getPosition()
 
-	    this._toolbar_paint.showAt([400,400])
+	    let buttonPos = [this._toolButton.getBoundingClientRect().left,
+			     this._toolButton.getBoundingClientRect().bottom]
+	    console.log(buttonPos)
+	    
+	    
+	    this._toolbar_paint.showAt(buttonPos)
 
 	}
 
 	
 	console.log("engage")
+    }
+
+    hideToolbars()
+    {
+	super.hideToolbars()
+	this._toolbar_paint.hide()
     }
 }
 

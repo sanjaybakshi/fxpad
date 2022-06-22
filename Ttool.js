@@ -27,6 +27,10 @@ class Ttool
     dismiss()
     {
     }
+
+    hideToolbars()
+    {
+    }
     
 }
 

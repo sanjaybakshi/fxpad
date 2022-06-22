@@ -5,10 +5,10 @@ import Tevent       from "./Tevent.js";
 
 import Ttouch	    from "./Ttouch.js";
 
-import Ttoolbar_objects from "./Ttoolbar_objects.js";
-import Ttoolbar_box     from "./Ttoolbar_box.js";
-import TtextBox         from "./TtextBox.js";
-import TselectionList   from "./TselectionList.js";
+import Ttoolbar_main  from "./Ttoolbar_main.js";
+import Ttoolbar_box   from "./Ttoolbar_box.js";
+import TtextBox       from "./TtextBox.js";
+import TselectionList from "./TselectionList.js";
 
 
 class Tcanvas
@@ -44,9 +44,9 @@ class Tcanvas
 	//this.fContext.scale(ratio,ratio)
 	
 	this._fToolbar_box     = new Ttoolbar_box("toolbar.boxId", this)
-	this._fToolbar_objects = new Ttoolbar_objects("toolbar.objectsId", this)	
+	this._fToolbar_main = new Ttoolbar_main("toolbar.mainId", this)	
 
-	this._fToolbar_objects.show()
+	this._fToolbar_main.show()
 	
 	this._fTextBox = new TtextBox("dragDropWindow")
 
@@ -127,6 +127,23 @@ class Tcanvas
 
 
 
+	/*
+	var ballBodyDef = {
+	    linearDamping: 1.5,
+	    angularDamping: 1
+	};
+
+	
+	for (i = 0; i < 10; i++) {
+	    var ball = world.createDynamicBody(ballBodyDef);
+	    ball.setBullet(true);
+	    ball.setPosition(balls[i]);
+	    ball.createFixture(pl.Circle(BALL_R), ballFixDef);
+	    ball.render = balls[i].render;
+	}
+*/
+	
+
 	this.setFrame(0)
     }
 
@@ -152,7 +169,7 @@ class Tcanvas
 		b.draw(this.fContext, true, true)
 	    }
 
-	    this._fToolbar_objects.draw(this.fContext)
+	    this._fToolbar_main.draw(this.fContext)
 	}
 
 	
@@ -180,17 +197,17 @@ class Tcanvas
 
     mouseDown(e)
     {
-	this._fToolbar_objects.mouseDown(e)	
+	this._fToolbar_main.mouseDown(e)	
     }
 
     mouseUp(e)
     {
-	this._fToolbar_objects.mouseUp(e)		
+	this._fToolbar_main.mouseUp(e)		
     }
 
     mouseMove(e)
     {
-	this._fToolbar_objects.mouseMove(e)
+	this._fToolbar_main.mouseMove(e)
     }
     
     onDrop(e)
@@ -343,13 +360,17 @@ class Tcanvas
 	if (this._fToolbar_box.isVisible()) {
 	    this._fToolbar_box.hide()
 	}
-
-	this._toolMode = this.kDrawObject;
+	if (this._fToolbar_main.isVisible()) {
+	    this._fToolbar_main.hide()
+	}
     }
     
     pauseAnim()
     {
 	this._pauseAnim = true
+
+	this._fToolbar_box.show()
+	this._fToolbar_main.show()
     }
 
     selectionListChanged()

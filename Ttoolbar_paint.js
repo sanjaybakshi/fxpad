@@ -3,13 +3,14 @@ import Tparams_strokeWidth from "./Tparams_strokeWidth.js";
 
 class Ttoolbar_paint extends Tdiv
 {
-    constructor(toolbar_paintId, callOnDismissFn, canvas)
+    constructor(toolbar_paintId, callOnDismissFn, colorChangeFunc, widthChangeFunc)
     {
 	super(toolbar_paintId)
 
-	this.fCanvas = canvas
-
 	this._callOnDismissFn = callOnDismissFn
+
+	this._colorChangeFunc = colorChangeFunc
+	this._widthChangeFunc = widthChangeFunc
 	
 	this._strokeWidthCtrl   = document.getElementById("strokeWidthId")
 
@@ -69,7 +70,7 @@ class Ttoolbar_paint extends Tdiv
 
     strokeColorChange(e)
     {
-	this.fCanvas.fCurrentStroke._color = e.target.value
+	this._colorChangeFunc(e.target.value)
     }
     
     strokeDismissClick(e)
@@ -77,12 +78,14 @@ class Ttoolbar_paint extends Tdiv
 	this.hide()
 	this._params_strokeWidth.hide()
 
-	this._callOnDismissFn()
+	if (this._callOnDismissFn != null) {
+	    this._callOnDismissFn()
+	}
     }
     
     strokeWidthChange_func(v)
     {
-	this.fCanvas.fCurrentStroke._brushWidth = v
+	this._widthChangeFunc(v)
 
     }
     strokeOpacityChange_func(v)
