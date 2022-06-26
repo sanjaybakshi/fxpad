@@ -6,34 +6,47 @@ class Ttoolbar_box extends Tdiv
     {
 	super(toolbar_boxId)
 	
-	this._snapshotCtrl  = document.getElementById("snapshotBoxId")
-	this._boxParamsCtrl = document.getElementById("paramsBoxId")
-	this._deleteCtrl    = document.getElementById("deleteBoxId")
+	this._lockCtrl   = document.getElementById("lockBoxId")
+	this._paramsCtrl = document.getElementById("params2BoxId")
+	this._splitCtrl  = document.getElementById("splitBoxId")
+	this._deleteCtrl = document.getElementById("deleteBoxId")
 	
 	this.fCanvas = canvas
 	
-	this._snapshotCtrl.addEventListener('click', (e) => {
-	    this.snapshotClick(e)
+	this._lockCtrl.addEventListener('click', (e) => {
+	    this.lockClick(e)
 	});
 
-	this._snapshotCtrl.addEventListener('mousedown', (e) => {
+	this._lockCtrl.addEventListener('mousedown', (e) => {
 	    e.stopPropagation()
 	});
 
-	this._snapshotCtrl.addEventListener('mouseup', (e) => {
+	this._lockCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+
+	this._paramsCtrl.addEventListener('click', (e) => {
+	    this.paramsClick(e)
+	});
+
+	this._paramsCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+
+	this._paramsCtrl.addEventListener('mouseup', (e) => {
 	    e.stopPropagation()
 	});
 
 	
-	this._boxParamsCtrl.addEventListener('click', (e) => {
-	    this.boxParamsClick(e)
+	this._splitCtrl.addEventListener('click', (e) => {
+	    this.splitClick(e)
 	});
 
-	this._boxParamsCtrl.addEventListener('mousedown', (e) => {
+	this._splitCtrl.addEventListener('mousedown', (e) => {
 	    e.stopPropagation()
 	});
 
-	this._boxParamsCtrl.addEventListener('mouseup', (e) => {
+	this._splitCtrl.addEventListener('mouseup', (e) => {
 	    e.stopPropagation()
 	});
 	
@@ -51,9 +64,8 @@ class Ttoolbar_box extends Tdiv
 	
     }
     
-    snapshotClick(e)
+    lockClick(e)
     {
-	console.log("click on button")
 	for (const obj of this.fCanvas._selectionList._sList) {
 	    if (obj.isDynamic()) {
 		obj.setStatic()
@@ -63,7 +75,7 @@ class Ttoolbar_box extends Tdiv
 	}
     }
 
-    boxParamsClick(e)
+    splitClick(e)
     {
 	let newBoxes = []
 	for (const obj of this.fCanvas._selectionList._sList) {
@@ -97,6 +109,19 @@ class Ttoolbar_box extends Tdiv
 	}
 
 	this.fCanvas._selectionList.clear()
+    }
+
+    paramsClick(e)
+    {
+	console.log("params click")
+	for (const obj of this.fCanvas._selectionList._sList) {
+	    if (obj.isActivatedOnCollision()) {
+		obj.setActivateOnCollision(false)
+	    } else {
+		obj.setActivateOnCollision(true)
+	    }
+	}
+
     }
 }
 

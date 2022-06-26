@@ -91,6 +91,7 @@ class Tbox
     _v_pixels;
     _existanceStart;
     _isDynamic;
+    _activateOnCollision;
     _sprite;
 
     _body_b2d;
@@ -107,6 +108,8 @@ class Tbox
 	    this._v_pixels = new Box2D.b2Vec2(pos[0], pos[1])
 	}
 	this._isDynamic = isDynamic
+
+	this._activateOnCollision = false
 	
 	// Setup the image in the box.
 	//
@@ -161,6 +164,21 @@ class Tbox
 	    }
 	}
     }
+
+    setActivateOnCollision(activatedState)
+    //
+    // Description:
+    //	   ActivatedOnCollision means that it has experienced at least one collision and then responds to gravity.
+    //
+    {
+	this._activateOnCollision = activatedState	
+    }
+    
+    isActivatedOnCollision()
+    {
+	return this._activateOnCollision
+    }
+
     
     removeFromSimulation()
     {
@@ -199,8 +217,20 @@ class Tbox
 		// I have to say I do not know the meaning of this "I", but if you set it to zero, bodies won't rotate
 		I: 1
 	    });
+
+	    if (this.isActivatedOnCollision()) {
+		body.setGravityScale(1.0)
+	    } else {
+		body.setGravityScale(0.0)
+	    }
+	    
+	    // Point the box2d object back at Tbox
+	    //
+	    body.setUserData(this)
 	    
 	    this._body_b2d = body
+
+	    
 	} else {
 	    let bd = new Box2D.b2BodyDef();
 	    if (this._isDynamic) {
@@ -574,6 +604,10 @@ class Tbox2d_world
 	if (usePlanck) {
 	    this._fGravity = planck.Vec2(0, -10);
 	    this._fWorld   = planck.World(this._fGravity);
+
+
+
+	    
 	} else {
 	    this._fGravity = new Box2D.b2Vec2(0, -10);
 	    this._fWorld   = new Box2D.b2World(this._fGravity);
@@ -825,6 +859,27 @@ class Tbox2d_world
 	if (usePlanck) {
 	    this._fWorld = null
 	    this._fWorld   = planck.World(this._fGravity);
+
+	    
+	    
+	    this._fWorld.on('pre-solve', function(contact, oldManifold) {
+		var manifold = contact.getManifold();
+        
+		if (manifold.pointCount == 0) {
+		    return;
+		}
+
+		let bodyA = contact.getFixtureA().getBody();
+		let bodyB = contact.getFixtureB().getBody();
+
+		bodyA.setGravityScale(1.0)
+		bodyB.setGravityScale(1.0)
+		let boxA = bodyA.getUserData()
+		let boxB = bodyB.getUserData()
+	    });
+	    
+
+
 	} else {
 	    this._fWorld = null
 	    this._fWorld   = new Box2D.b2World(this._fGravity);
