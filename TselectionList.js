@@ -1,28 +1,28 @@
 class TselectionList
 {
-    constructor(canvas)
+    constructor(selectionListChanged_callback)
     {
 	this._sList = []
-	this.fCanvas = canvas
+	this.selListChanged_cb = selectionListChanged_callback
     }
 
     clear()
     {
 	this._sList = []
 
-	this.fCanvas.selectionListChanged()
+	this.selListChanged_cb()
     }
 
     replace(l)
     {
 	this._sList = l
 
-	this.fCanvas.selectionListChanged()	
+	this.selListChanged_cb()
     }
 
     add(addList)
     {
-	this.fCanvas.selectionListChanged()
+	this.selListChanged_cb()
     }
     
 }

@@ -21,11 +21,22 @@ class Tsprite
 	
 	//this._imgData = this.imageFromFile("testimg.png")
 
+	this._origFileImage = null
+	
 	this._imgBitmap = null
 	this._useFileTexture = false
 
 	this._widthInPixels = 0
 	this._heightInPixels = 0
+    }
+
+    setOrigFileImage(img)
+    //
+    // Description:
+    //		If the source of the sprite was an image that was pasted or dropped,
+    //		we keep it so we can resize the box and get the original resolution.
+    {
+	this._origFileImage = img	
     }
     
     setScale(sizeInPixels)
@@ -81,8 +92,18 @@ class Tsprite
 	}
     }
 
+    resizeSprite(newWidth, newHeight)
+    {
+	//this.setScaleWH(newWidth, newHeight)
+
+	this._scaleX = newWidth  / this._imgBitmap.width
+	this._scaleY = newHeight / this._imgBitmap.height
+	
+	console.log(this._scaleX, this._scaleY)
+    }
+    
     drawFileOnSprite(img)
-    {	
+    {
 	let inMemoryCanvas  = document.createElement("canvas")
 	let inMemoryContext = inMemoryCanvas.getContext("2d");
 

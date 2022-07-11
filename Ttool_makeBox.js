@@ -3,6 +3,9 @@ import Ttouch  from "./Ttouch.js";
 import Tstroke from "./Tstroke.js";
 
 
+import { fModel } from './Tmodel.js'
+
+
 class Ttool_makeBox extends Ttool
 {
     constructor(canvas, toolButton)
@@ -71,7 +74,8 @@ class Ttool_makeBox extends Ttool
 		// Only make the box if it's big enough.
 		//
 		if (width > 5 && height > 5) {
-		    let newBox = this.fCanvas._box2dWorld.addBox(center, width, height, this.fCanvas.getCurrentFrame())
+		    //let newBox = this.fCanvas._box2dWorld.addBox(center, width, height, this.fCanvas.getCurrentFrame())
+		    let newBox = fModel.fBox2dWorld.addBox(center, width, height, this.fCanvas.getCurrentFrame())
 		    newBoxArray.push(newBox)
 		}
 	    }
@@ -89,7 +93,7 @@ class Ttool_makeBox extends Ttool
 		// construcuted until setFrame is called.
 		//
 		if (newBoxArray.length > 0) {
-		    this.fCanvas._selectionList.replace(newBoxArray)
+		    fModel.fSelectionList.replace(newBoxArray)
 		}
 		
 	    }

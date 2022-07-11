@@ -8,6 +8,8 @@ let fCanvas
 let fPlaybackSlider
 let fPalette
 
+
+
 function init()
 {
     fCanvas         = new Tcanvas("fxCanvas")
@@ -21,18 +23,23 @@ function init()
     //
 
     fitToWindow()
-
-    fCanvas.init()    
 }
 
 function fitToWindow()
 {
-    fCanvas.fCanvas.width  = fCanvas.fCanvas.offsetWidth;
-    fCanvas.fCanvas.height = fCanvas.fCanvas.offsetHeight;
+    var w = fCanvas.fCanvas.offsetWidth
+    var h = fCanvas.fCanvas.offsetHeight
+    console.log(w,h)
+    
+    fCanvas.fCanvas.style.width  = w + "px";
+    fCanvas.fCanvas.style.height = h + "px";
 
-    fCanvas.fCanvas.style.width  = fCanvas.fCanvas.offsetWidth;
-    fCanvas.fCanvas.style.height = fCanvas.fCanvas.offsetHeight;
+    var scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
+    //scale = 1
+    fCanvas.fCanvas.width  = Math.floor(w * scale);
+    fCanvas.fCanvas.height = Math.floor(h * scale);
 
+    fCanvas.init()    
     
 /*
     let pbsHeight = fPlaybackSlider._playBackCtrl.clientHeight

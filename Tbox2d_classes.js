@@ -1,6 +1,7 @@
-import Tmath   from "./Tmath.js";
-import Tsprite from "./Tsprite.js";
-import Timage  from "./Timage.js";
+import Tmath      from "./Tmath.js";
+import Tsprite    from "./Tsprite.js";
+import Tsprite2   from "./Tsprite2.js";
+import Timage     from "./Timage.js";
 
 import Tfont	  from  "./Tfont.js"
 import TdrawUtils from "./TdrawUtils.js"
@@ -21,6 +22,7 @@ function pixels2world_vec(v)
     if (usePlanck) {
 	let newVec = planck.Vec2()
 
+	console.log(fCanvasWidth, fWorldWidth)
 	let x = Tmath.remap(0, fCanvasWidth,  0, fWorldWidth,  v.x)
 	let y = Tmath.remap(0, fCanvasHeight, 0, fWorldHeight, v.y)
 
@@ -93,6 +95,7 @@ class Tbox
     _isDynamic;
     _activateOnCollision;
     _sprite;
+    _sprite2;
 
     _body_b2d;
     
@@ -116,12 +119,15 @@ class Tbox
 	this._sprite = new Tsprite(pos)
 	this._sprite.setScaleWH(width, height);
 
+	this._sprite2 = new Tsprite2()
+	
 	this._text = ""
 	this._fontSize = 16
 	this._fontName = "Avenir"
 	
     }
 
+    
     setPosition(newPos)
     {
 	if (usePlanck) {
@@ -135,6 +141,43 @@ class Tbox
 	    this._body_b2d.setPosition(v_world)	    
 	}
 	
+    }
+
+    resize(width, height)
+    {
+	this._widthPixels  = width
+	this._heightPixels = height
+
+	console.log(this._widthPixels, this._heightPixels)
+	
+	let w = Tmath.remap(0, fCanvasWidth,  0, fWorldWidth,  this._widthPixels)
+	let h = Tmath.remap(0, fCanvasHeight, 0, fWorldHeight, this._heightPixels)
+
+	for (let fixture = this._body_b2d.getFixtureList(); fixture; fixture = fixture.getNext()) {
+
+	    this._body_b2d.destroyFixture(fixture)
+	}
+	
+	let shape = planck.Box(w/2, h/2);
+	this._body_b2d.createFixture(shape, 1.0);
+
+	if (this._sprite._imgBitmap != null) {
+
+	    if (this._sprite._origFileImage != null) {
+		console.log("have an image")
+		this._sprite.drawFileOnSprite(this._sprite._origFileImage)
+		this._sprite.resizeSprite(this._widthPixels, this._heightPixels)
+	    } else {
+		//this._sprite.drawFileOnSprite(this._imgBitmap)
+	    }
+	}
+
+	if (this._sprite2.hasImage()) {
+
+	    console.log("have an image")
+	    this._sprite2.resize(this._widthPixels, this._heightPixels)
+	}
+
     }
     
     isDynamic()
@@ -265,7 +308,11 @@ class Tbox
 		this._sprite._rot = -rot
 		this._sprite._pos = [pos_pixels.x, pos_pixels.y]
 		//this._sprite._pos = [Math.floor(pos_pixels.x), Math.floor(pos_pixels.y)]		
-		this._sprite.draw(ctx)
+		//this._sprite.draw(ctx)
+
+		this._sprite2._rot = -rot
+		this._sprite2._pos = {x:pos_pixels.x, y:pos_pixels.y}
+		this._sprite2.draw(ctx)
 	    }
 
 	    ctx.beginPath();
@@ -437,6 +484,11 @@ class Tbox
 	s.translate(left, top)
 	
 	this._sprite.drawStrokeOnSprite(s)
+
+	if (!this._sprite2.hasBitmap()) {
+	    this._sprite2.initBitmap(this._widthPixels, this._heightPixels)
+	}
+	this._sprite2.drawStrokeOnBitmap(s)
     }
 
     getCenterInPixels()
@@ -640,8 +692,13 @@ class Tbox2d_world
 	    let box = new Tbox(pos, width, height, frame, isDynamic);
 	    this._fObjectList.push(box)
 
+	    
+	    box._sprite.setOrigFileImage(img)
 	    box._sprite.drawFileOnSprite(img)
 
+	    box._sprite2.initBitmapWithImage(img, width, height)
+
+	    
 	    // hack- this is done in Tcanvas normally but hacking it here
 	    // loading the file is delayed so easier to do it here as we
 	    // know the file is loaded.
@@ -657,6 +714,62 @@ class Tbox2d_world
 	img.imageFromFile(textureFilename, bound_addTextureBox_fileLoad)
     }
 
+    addBox2(params)
+    {
+	// pull the params.
+	//
+	let isDynamic = true
+	if (params.hasOwnProperty('isDynamic')) {
+	    isDynamic = params['isDynamic']
+	}
+
+	let pos = [50,50]
+	if (params.hasOwnProperty('pos')) {
+	    pos = params['pos']
+	}
+
+	let frame = 0
+	if (params.hasOwnProperty('frame')) {
+	    frame = params['frame']
+	}
+
+	let image = null
+	if (params.hasOwnProperty('image')) {
+	    image = params['image']
+	}
+
+	if (image != null) {
+	    let width  = image.width
+	    let height = image.height
+
+	    //pos[0] = 500
+	    //pos[1] = 500
+	    
+	    console.log(pos)
+	    console.log("in the addBox func: " + width + " " + height)
+	    let box = new Tbox(pos, width, height, frame, isDynamic)
+
+
+	    
+	    box._sprite.setOrigFileImage(image)
+	    box._sprite.drawFileOnSprite(image)
+
+	    box._sprite2.initBitmapWithImage(image, width, height)
+	    
+	    this._fObjectList.push(box)
+	    
+	    // hack- this is done in Tcanvas normally but hacking it here
+	    // loading the file is delayed so easier to do it here as we
+	    // know the file is loaded.
+	    //
+	    this.setFrame(frame)
+
+	    return box
+	}	
+    }
+
+    
+    
     addBoxWithText(pos, width, frame, text, font=this._defFontName, fontSize=this._defFontSize, isDynamic=true)
     {
 
@@ -672,8 +785,13 @@ class Tbox2d_world
 	box._fontName = font
 
 	this._fObjectList.push(box)
-
 	box._sprite.drawTextOnSprite(text, font, fontSize)
+
+	
+	if (!box._sprite2.hasBitmap()) {
+	    box._sprite2.initBitmap(bWidth, bHeight)
+	}
+	box._sprite2.drawTextOnBitmap(text, font, fontSize)	
 
 	return box
     }

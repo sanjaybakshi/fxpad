@@ -1,6 +1,8 @@
 import Ttool   from "./Ttool.js";
 import Ttouch  from "./Ttouch.js";
 
+import { fModel } from './Tmodel.js'
+
 class Ttool_makeJoint extends Ttool
 {
     
@@ -51,7 +53,7 @@ class Ttool_makeJoint extends Ttool
 	let x = touchInfo.x
 	let y = touchInfo.y
 	    
-	let b = this.fCanvas._box2dWorld.intersects([x,y])
+	let b = fModel.fBox2dWorld.intersects([x,y])
 	
 	if (b != null) {
 	    // starting to make a joint.
@@ -85,7 +87,7 @@ class Ttool_makeJoint extends Ttool
 	let x = touchInfo.x
 	let y = touchInfo.y
 	
-	let b = this.fCanvas._box2dWorld.intersects([x,y])
+	let b = fModel.fBox2dWorld.intersects([x,y])
 	
 	if (b != null && b != this._box1) {
 	    // starting to make a joint.
@@ -96,9 +98,9 @@ class Ttool_makeJoint extends Ttool
 	    // Construct a joint.
 	    //
 	    let cf = this.fCanvas.getCurrentFrame()
-	    this.fCanvas._box2dWorld.addJoint(this._box1, this._box1Pos,
-					      this._box2, this._box2Pos,
-					      cf)
+	    fModel.fBox2dWorld.addJoint(this._box1, this._box1Pos,
+					this._box2, this._box2Pos,
+					cf)
 	    
 	    // Hack to refresh. Need a better mechanism.
 	    //

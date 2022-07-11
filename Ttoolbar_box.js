@@ -1,5 +1,8 @@
 import Tdiv from "./Tdiv.js";
 
+import { fModel } from './Tmodel.js'
+
+
 class Ttoolbar_box extends Tdiv
 {
     constructor(toolbar_boxId, canvas)
@@ -66,7 +69,7 @@ class Ttoolbar_box extends Tdiv
     
     lockClick(e)
     {
-	for (const obj of this.fCanvas._selectionList._sList) {
+	for (const obj of fModel.fSelectionList._sList) {
 	    if (obj.isDynamic()) {
 		obj.setStatic()
 	    } else {
@@ -78,16 +81,17 @@ class Ttoolbar_box extends Tdiv
     splitClick(e)
     {
 	let newBoxes = []
-	for (const obj of this.fCanvas._selectionList._sList) {
-	    let bxs = this.fCanvas._box2dWorld.split(obj, this.fCanvas.getCurrentFrame())
+	for (const obj of fModel.fSelectionList._sList) {
+	    //let bxs = this.fCanvas._box2dWorld.split(obj, this.fCanvas.getCurrentFrame())
+	    let bxs = fModel.fBox2dWorld.split(obj, this.fCanvas.getCurrentFrame())
 
 	    for (const b of bxs) {
 		newBoxes.push(b)
 	    }
 	}
 
-	for (const obj of this.fCanvas._selectionList._sList) {
-	    this.fCanvas._box2dWorld.deleteBox(obj)
+	for (const obj of fModel.fSelectionList._sList) {
+	    fModel.fBox2dWorld.deleteBox(obj)
 	}
 	
 
@@ -99,22 +103,22 @@ class Ttoolbar_box extends Tdiv
 	// Need to call this here (not right after creating it because it won't be fully
 	// construcuted until setFrame is called.
 	//	
-	this.fCanvas._selectionList.replace(newBoxes)	
+	fModel.fSelectionList.replace(newBoxes)	
     }
 
     deleteClick(e)
     {
-	for (const obj of this.fCanvas._selectionList._sList) {
-	    this.fCanvas._box2dWorld.deleteBox(obj)
+	for (const obj of fModel.fSelectionList._sList) {
+	    fModel.fBox2dWorld.deleteBox(obj)	    
 	}
 
-	this.fCanvas._selectionList.clear()
+	fModel.fSelectionList.clear()
     }
 
     paramsClick(e)
     {
 	console.log("params click")
-	for (const obj of this.fCanvas._selectionList._sList) {
+	for (const obj of fModel.fSelectionList._sList) {
 	    if (obj.isActivatedOnCollision()) {
 		obj.setActivateOnCollision(false)
 	    } else {

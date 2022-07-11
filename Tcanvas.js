@@ -1,5 +1,5 @@
 import Tstroke      from "./Tstroke.js";
-import Tbox2d_world from "./Tbox2d_classes.js";
+//import Tbox2d_world from "./Tbox2d_classes.js";
 import Timage       from "./Timage.js";
 import Tevent       from "./Tevent.js";
 
@@ -8,7 +8,10 @@ import Ttouch	    from "./Ttouch.js";
 import Ttoolbar_main  from "./Ttoolbar_main.js";
 import Ttoolbar_box   from "./Ttoolbar_box.js";
 import TtextBox       from "./TtextBox.js";
-import TselectionList from "./TselectionList.js";
+//import TselectionList from "./TselectionList.js";
+
+
+import { fModel } from './Tmodel.js'
 
 
 class Tcanvas
@@ -27,6 +30,7 @@ class Tcanvas
 	this.fCanvas  = document.getElementById(canvasDocName)
 
 
+
 	/*
 	// make a hirez canvas.
 	// https://stackoverflow.com/questions/15661339/how-do-i-fix-blurry-text-in-my-html5-canvas
@@ -41,7 +45,6 @@ class Tcanvas
 	this.fCanvas.height = this.fCanvas.style.height * ratio
 	*/
 	this.fContext = this.fCanvas.getContext('2d')
-	//this.fContext.scale(ratio,ratio)
 	
 	this._fToolbar_box     = new Ttoolbar_box("toolbar.boxId", this)
 	this._fToolbar_main = new Ttoolbar_main("toolbar.mainId", this)	
@@ -50,15 +53,16 @@ class Tcanvas
 	
 	this._fTextBox = new TtextBox("dragDropWindow")
 
-	this._selectionList  = new TselectionList(this)
+	
+	//this._selectionList  = new TselectionList(this)
 
 	this._canvasWidth = function() {
 
-	    return this.fCanvas.width
+	    return this.fCanvas.offsetWidth
 	}
 
 	this._canvasHeight = function() {
-	    return this.fCanvas.height
+	    return this.fCanvas.offsetHeight
 	}
 
 	this.fCanvas.addEventListener('touchstart', (e) => {
@@ -102,7 +106,31 @@ class Tcanvas
 	    this.onDragEnter(e);
 	});
 
+	console.log('setting up ptaste')	    
+
+	document.onpaste = this.onPaste
 	
+	/*
+	document.onpaste = function (event) {
+	    var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+	    console.log(JSON.stringify(items)); // might give you mime types
+	    for (var index in items) {
+		var item = items[index];
+		if (item.kind === 'file') {
+		    var blob = item.getAsFile();
+		    var reader = new FileReader();
+		    reader.onload = function (event) {
+			console.log(event.target.result); // data url!
+		    }; 
+		    reader.readAsDataURL(blob);
+		}
+	    }
+	};
+    
+	this.fCanvas.addEventListener('paste', (e) => {
+	    this.onPaste(e)
+	});
+	*/
 	// Test to draw an image.
 	//
 	//this._testSprite = new Timage([this._canvasWidth()/2, this._canvasHeight()/2]);
@@ -115,13 +143,22 @@ class Tcanvas
 	
 	window.requestAnimationFrame(this.draw);
 
+	var scale = window.devicePixelRatio; // Change to 1 on retina screens to see blurry canvas.
+	
+	this.fContext.scale(scale, scale)
+	
+	//this._box2dWorld = new Tbox2d_world(this._canvasWidth(), this._canvasHeight())
+	//Tmodel.fBox2dWorld = new Tbox2d_world(this._canvasWidth(), this._canvasHeight())	
 
-	this._box2dWorld = new Tbox2d_world(this._canvasWidth(), this._canvasHeight())
+	console.log("this is the width: " + this._canvasWidth())
+	console.log("this is the scale: " + scale)
+	fModel.init(this._canvasWidth(), this._canvasHeight(), this.selectionListChanged.bind(this))
 
+	
 	// Add bottom boundary.
 	//
 	let boundaryPixels = 10
-	this._box2dWorld.addBox( [this._canvasWidth()/2,this._canvasHeight()-boundaryPixels/2], this._canvasWidth(), boundaryPixels, 0, false );
+	fModel.fBox2dWorld.addBox( [this._canvasWidth()/2,this._canvasHeight()-boundaryPixels/2], this._canvasWidth(), boundaryPixels, 0, false );
 
 	//this.addBox( [fCanvasWidth/2,25], 50, 50, 0, false);	
 
@@ -151,21 +188,23 @@ class Tcanvas
 
 	if (!this._pauseAnim) {
 
-	    this._box2dWorld.step()
+	    //this._box2dWorld.step()
+	    fModel.fBox2dWorld.step()
 	    let frameNum = this.getCurrentFrame() + 1
 	    this.setFrame(frameNum)
 	}
 	
-	this.fContext.setTransform(1, 0, 0, 1, 0, 0);
+	//this.fContext.setTransform(1, 0, 0, 1, 0, 0);
 	
 	this.fContext.clearRect(0, 0, this._canvasWidth(), this._canvasHeight())
 	
 
-	this._box2dWorld.draw(this.fContext, this._pauseAnim)
+	//this._box2dWorld.draw(this.fContext, this._pauseAnim)
+	fModel.fBox2dWorld.draw(this.fContext, this._pauseAnim)	
 
 	if (this._pauseAnim) {
 
-	    for (const b of this._selectionList._sList) {
+	    for (const b of fModel.fSelectionList._sList) {
 		b.draw(this.fContext, true, true)
 	    }
 
@@ -209,6 +248,150 @@ class Tcanvas
     {
 	this._fToolbar_main.mouseMove(e)
     }
+
+    testFunc2()
+    {
+	console.log("testFunc2")
+    }
+    testFunc(data)
+    {
+	return function(event)
+	{
+	    console.log(data)
+	}
+    }
+
+    onPaste(e)
+    {
+	e.preventDefault()
+
+
+
+	
+	function onLoad_file(callbackFunc, params)
+	{
+	    return function(event) {
+		var image = new Image()
+		image.src = event.target.result
+
+		
+		function onLoad_image(callbackFunc, params)
+		{
+		    console.log(image.width, image.height)
+
+		    //let newBoxArray = []
+
+		    params.image = image
+		    callbackFunc(params)
+		    //let newBox = this._box2dWorld.addBoxWithImage([p.x,p.y], this.getCurrentFrame, image)
+		    let newBox = fModel.fBox2dWorld.addBoxWithImage([p.x,p.y], this.getCurrentFrame, image)
+
+		    
+		    //newBoxArray.push(newBox)
+
+		    //this._selectionList.replace(newBoxArray)
+		}
+
+		image.onload = onLoad_image(callbackFunc, params)
+	    }	    
+	}
+	
+	var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+	for (var index in items) {
+	    var item = items[index];
+	    if (item.kind === 'file') {
+		var blob = item.getAsFile();
+		var reader = new FileReader();
+
+
+		let params = { 'pos': [100,200] }
+		
+		reader.onload = function(event) {
+		    let params = { 'pos': [100,200] }
+		    var image = new Image()
+		    image.src = event.target.result
+
+		    image.onload = () =>  {
+			console.log(image.width, image.height)
+
+			params.image = image
+			console.log(params)
+
+			let newBoxArray = []
+			//let newBox = this._box2dWorld.addBox(params)
+			let newBox = fModel.fBox2dWorld.addBox2(params)
+			newBoxArray.push(newBox)
+			fModel.fSelectionList.replace(newBoxArray)
+		    
+
+		    }
+		}
+
+
+		/*
+		reader.onload = (function(callbackFunc) {
+		    return function(event) {
+			console.log("why")
+			console.log(callbackFunc)
+		    }
+		})("sanjay")
+		*/
+
+		/*
+		reader.onload = function(event) {
+		    console.log("why")
+
+		    let params = { 'pos': [100,200] }
+		    var image = new Image()
+		    image.src = event.target.result
+		    image.onload = () => {
+			console.log(image.width, image.height)
+			console.log(params)
+
+			params.image = image
+			let newBox = this._box2dWorld.addBox(params)
+			newBoxArray.push(newBox)
+
+		    //this._selectionList.replace(newBoxArray)
+			
+			//let center = [e.offsetX, e.offsetY]
+			//let newBox = this._box2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
+			//console.log(center)
+			
+			
+		    }
+		    
+		    
+		}
+*/
+/*
+		reader.onload = function(event) {
+		    console.log("called it")
+		}
+		*/
+		/*
+		reader.onload = function (event) {
+		    //console.log(event.target.result)
+
+		    var image = new Image()
+		    image.src = event.target.result
+		    image.onload = () => {
+			console.log(image.width, image.height)
+			let center = [e.offsetX, e.offsetY]
+			//let newBox = this._box2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
+			console.log(center)
+			
+			
+		    }
+		    //let img = event["target"]
+		    //console.log(img.width,img.height)
+		    console.log(event.target.result); // data url!
+		}; 
+		*/
+		reader.readAsDataURL(blob);
+	    }
+	}
+    }
     
     onDrop(e)
     {
@@ -240,7 +423,24 @@ class Tcanvas
 	
 	if (url) {
 	    let center = [e.offsetX, e.offsetY]
-	    let newBox = this._box2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
+	    //let newBox = fModel.fBox2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
+
+	    let params = { 'pos': [e.offsetX, e.offsetY] }
+	    
+	    var image = new Image()
+	    image.src = url[1]
+	    
+	    image.onload = () => {
+
+		params.image = image
+		
+		let newBoxArray = []
+		let newBox = fModel.fBox2dWorld.addBox2(params)
+		newBoxArray.push(newBox)
+		fModel.fSelectionList.replace(newBoxArray)
+	    }
+
+	    
 	    //newBoxArray.push(newBox)
 	} else {
 	    console.log("no url")
@@ -251,7 +451,8 @@ class Tcanvas
 	    
 	    //this._fTextBox.showAt([e.offsetX, e.offsetY])
 	    droppedText = droppedText.trim()
-	    let newBox = this._box2dWorld.addBoxWithText(center, 300, this.getCurrentFrame(), droppedText)
+	    //let newBox = this._box2dWorld.addBoxWithText(center, 300, this.getCurrentFrame(), droppedText)
+	    let newBox = fModel.fBox2dWorld.addBoxWithText(center, 300, this.getCurrentFrame(), droppedText)	    
 	    newBoxArray.push(newBox)	    
 	}
 
@@ -264,7 +465,7 @@ class Tcanvas
 	    // Need to call this here (not right after creating it because it won't be fully
 	    // construcuted until setFrame is called.
 	    //
-	    this._selectionList.replace(newBoxArray)	    
+	    fModel.fSelectionList.replace(newBoxArray)	    
 	}
     }
 
@@ -280,22 +481,28 @@ class Tcanvas
 	e.preventDefault()
     }
 
+
+    
     setFrame(f)
     {
 	this._currentFrame = f
 	//console.log( 'The data: %d', this._currentFrame )
 
 	if (this._currentFrame >= this._totalNumFrames) {
-	    this._box2dWorld.reset()
+	    //this._box2dWorld.reset()
+	    //this.fModel.fBox2dWorld.reset()
+	    fModel.fBox2dWorld.reset()	    
             this._currentFrame = 0
         } else if (this._currentFrame <= 0) {
-	    this._box2dWorld.reset()
+	    //this._box2dWorld.reset()
+	    fModel.fBox2dWorld.reset()
             this._currentFrame = 0
         }
 
         // Add the bodies.
         //
-	this._box2dWorld.setFrame(this._currentFrame)
+	//this._box2dWorld.setFrame(this._currentFrame)
+	fModel.fBox2dWorld.setFrame(this._currentFrame)
 
 	this._frameChangeEvent.trigger(this._currentFrame);
     }
@@ -377,8 +584,8 @@ class Tcanvas
     {
 	// Show the toolbar for these objects.
 	//
-	if (this._selectionList._sList.length > 0) {
-	    b = this._selectionList._sList[0]
+	if (fModel.fSelectionList._sList.length > 0) {
+	    b = fModel.fSelectionList._sList[0]
 	    // get the center of the box.
 	    //
 	    let bCenter = b.getCenterInPixels()

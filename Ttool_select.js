@@ -1,6 +1,8 @@
 import Ttool  from "./Ttool.js";
 import Ttouch from "./Ttouch.js";
 
+import { fModel } from './Tmodel.js'
+
 
 class Ttool_select extends Ttool
 {
@@ -82,10 +84,10 @@ class Ttool_select extends Ttool
 	this._box1 = null
 	this._box2 = null
 	
-	let boxes = this.fCanvas._box2dWorld.intersectRect(this._posA.x, this._posA.y,
-							       this._posB.x, this._posB.y)
+	let boxes = fModel.fBox2dWorld.intersectRect(this._posA.x, this._posA.y,
+						     this._posB.x, this._posB.y)
 	
-	this.fCanvas._selectionList.replace(boxes)
+	fModel.fSelectionList.replace(boxes)
     }
 }
 

@@ -4,6 +4,8 @@ import Tstroke from "./Tstroke.js";
 
 import Ttoolbar_paint from "./Ttoolbar_paint.js";
 
+import { fModel } from './Tmodel.js'
+
 
 class Ttool_paint extends Ttool
 {
@@ -40,7 +42,7 @@ class Ttool_paint extends Ttool
 	console.log("paint-mouseDown")
 	super.mouseDown(e)
 
-	if (this.fCanvas._selectionList._sList.length > 0) {
+	if (fModel.fSelectionList._sList.length > 0) {
 	    let touchInfo = Ttouch.getTouch(e)
 	    
 	    let x = touchInfo.x
@@ -56,7 +58,7 @@ class Ttool_paint extends Ttool
     {
 	super.mouseMove(e)	
 
-	if (this.fCanvas._selectionList._sList.length > 0 && this._strokeStarted) {
+	if (fModel.fSelectionList._sList.length > 0 && this._strokeStarted) {
 	    let touchInfo = Ttouch.getTouch(e)
 	    
 	    let x = touchInfo.x
@@ -73,9 +75,9 @@ class Ttool_paint extends Ttool
 	console.log("paint->mouseUp a")
 	super.mouseUp(e)
 
-	if (this.fCanvas._selectionList._sList.length > 0 && this._strokeStarted) {
+	if (fModel.fSelectionList._sList.length > 0 && this._strokeStarted) {
 
-	    for (const obj of this.fCanvas._selectionList._sList) {
+	    for (const obj of fModel.fSelectionList._sList) {
 		obj.drawStrokeOnSprite(this.fCurrentStroke)
 	    }
 	}
@@ -88,8 +90,8 @@ class Ttool_paint extends Ttool
     {
 	super.draw(ctx)
 
-	if (this.fCanvas._selectionList._sList.length > 0 && this._strokeStarted) {
-	    let obj = this.fCanvas._selectionList._sList[0]
+	if (fModel.fSelectionList._sList.length > 0 && this._strokeStarted) {
+	    let obj = fModel.fSelectionList._sList[0]
 
 	    this.fCurrentStroke.draw(ctx)
 	    
@@ -110,7 +112,7 @@ class Ttool_paint extends Ttool
     {
 	super.engage()
 
-	if (this.fCanvas._selectionList._sList.length > 0) {
+	if (fModel.fSelectionList._sList.length > 0) {
 	    //let pos = this.getPosition()
 
 	    let buttonPos = [this._toolButton.getBoundingClientRect().left,

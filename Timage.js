@@ -13,6 +13,7 @@ class Timage
 	this._img.onload = callbackFunc
     }
 
+
 }
 
 export default Timage
