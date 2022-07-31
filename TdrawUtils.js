@@ -4,6 +4,73 @@ class TdrawUtils
 
     }
 
+    static drawTriangle(ctx, center, w, h, direction, fillColor='black', strokeStyle=null, strokeWidth=0)
+
+    //
+    // Description:
+    //		Draw a triangle.
+    //	Arguments:
+    //		direction: "east"  - point is on the right  like '>'
+    //		direction: "west"  - point is on the left   like '<'
+    //		direction: "north" - point is on the top    like '^'
+    //		direction: "south" - point is on the bottom like 'v'
+    //
+    {
+	
+	ctx.beginPath();
+
+	if (direction == 'east') {
+	    ctx.moveTo(center.x + w, center.y)
+	    ctx.lineTo(center.x - w, center.y + h)
+	    ctx.lineTo(center.x - w, center.y - h)
+	    ctx.lineTo(center.x + w, center.y)		
+	} else if (direction == 'south') {
+	    ctx.moveTo(center.x, center.y + h)
+	    ctx.lineTo(center.x - w, center.y - h)
+	    ctx.lineTo(center.x + w, center.y - h)
+	    ctx.lineTo(center.x, center.y + h)		
+	}
+	
+	if (fillColor) {
+	    ctx.fillStyle = fillColor
+	    ctx.fill();
+	}
+	if (strokeStyle) {
+	    ctx.lineWidth = strokeWidth;
+	    ctx.strokeStyle = strokeStyle;
+	    ctx.stroke();	    
+	}
+
+
+    }
+    
+    static drawCircle(ctx, center, radius, fillColor='black', strokeStyle=null, strokeWidth=0)
+    {
+	ctx.beginPath();
+	ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
+
+	if (fillColor) {
+	    ctx.fillStyle = fillColor
+	    ctx.fill();
+	}
+	if (strokeStyle) {
+	    ctx.lineWidth = strokeWidth;
+	    ctx.strokeStyle = strokeStyle;
+	    ctx.stroke();	    
+	}
+    }
+
+    static isInsideCircle(p, center, radius)
+    {
+	console.log(p,center,radius)
+	let d = Math.sqrt( (center.x - p.x)*(center.x - p.x) + (center.y - p.y)*(center.y - p.y) )
+	if (d < radius) {
+	    return true
+	}
+	return false
+    }		   
+
+    
     static drawRect(ctx, center, width, height)
     {
 	let p0 = [center.x - width/2, center.y - height/2]
@@ -87,7 +154,9 @@ class TdrawUtils
 	if (a.y1 > b.y2 || b.y1 > a.y2) return false;
 	
 	return true;
-    }    
+    }
+
+
 }
 
 export default TdrawUtils

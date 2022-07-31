@@ -79,6 +79,7 @@ class Tsprite
     {
 	if (this._imgBitmap != null) {
 	    ctx.save()
+
 	    
 	    ctx.translate(this._pos[0], this._pos[1])
 	    ctx.rotate(this._rot);

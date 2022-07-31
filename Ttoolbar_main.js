@@ -7,6 +7,7 @@ import Ttool_makeJoint from "./Ttool_makeJoint.js";
 import Ttool_select    from "./Ttool_select.js";
 import Ttool_xform     from "./Ttool_xform.js";
 import Ttool_paint     from "./Ttool_paint.js";
+import Ttool_scissors  from "./Ttool_scissors.js";
 
 class Ttoolbar_main extends Tdiv
 {
@@ -20,12 +21,14 @@ class Ttoolbar_main extends Tdiv
 	this._drawJointCtrl  = document.getElementById("drawJointId")
 	this._xformCtrl      = document.getElementById("xformId")
 	this._paintCtrl      = document.getElementById("paintId")
+	this._scissorsCtrl   = document.getElementById("scissorsId")
 
-	this._makeBoxTool = new Ttool_makeBox  (canvas, this._makeBoxCtrl)	
-	this._jointTool   = new Ttool_makeJoint(canvas, this._drawJointCtrl)
-	this._selectTool  = new Ttool_select   (canvas, this._selectCtrl)
-	this._xformTool   = new Ttool_xform    (canvas, this._xformCtrl)
-	this._paintTool   = new Ttool_paint    (canvas, this._paintCtrl)	
+	this._makeBoxTool  = new Ttool_makeBox  (canvas, this._makeBoxCtrl)	
+	this._jointTool    = new Ttool_makeJoint(canvas, this._drawJointCtrl)
+	this._selectTool   = new Ttool_select   (canvas, this._selectCtrl)
+	this._xformTool    = new Ttool_xform    (canvas, this._xformCtrl)
+	this._paintTool    = new Ttool_paint    (canvas, this._paintCtrl)
+	this._scissorsTool = new Ttool_scissors (canvas, this._scissorsCtrl)	
 
 	this._currentTool = this._makeBoxTool
 	
@@ -100,6 +103,16 @@ class Ttoolbar_main extends Tdiv
 	    e.stopPropagation()
 	});
 
+	this._scissorsCtrl.addEventListener('click', (e) => {
+	    this.toolChange(e)
+	});
+	this._scissorsCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._scissorsCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+	
 	this._makeBoxCtrl.style.backgroundColor    = "darkgray";
     }
 
@@ -115,6 +128,7 @@ class Ttoolbar_main extends Tdiv
 	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
+	    this._scissorsCtrl.style.backgroundColor   = "gainsboro";	    
 	    
 	    this._currentTool = this._selectTool
 	    
@@ -125,7 +139,8 @@ class Ttoolbar_main extends Tdiv
 	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
-
+	    this._scissorsCtrl.style.backgroundColor   = "gainsboro";
+	    
 	    this._currentTool = this._makeBoxTool
 
 	} else if (e.target.id == "drawCircleId") {
@@ -135,6 +150,7 @@ class Ttoolbar_main extends Tdiv
 	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
+	    this._scissorsCtrl.style.backgroundColor   = "gainsboro";
 	    
 	} else if (e.target.id == "drawJointId") {
 	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
@@ -143,6 +159,7 @@ class Ttoolbar_main extends Tdiv
 	    this._drawJointCtrl.style.backgroundColor  = "darkgray";
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";	    
+	    this._scissorsCtrl.style.backgroundColor   = "gainsboro";
 	    
 	    this._currentTool = this._jointTool
 	} else if (e.target.id == "xformId") {
@@ -152,6 +169,7 @@ class Ttoolbar_main extends Tdiv
 	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
 	    this._xformCtrl.style.backgroundColor      = "darkgray";
 	    this._paintCtrl.style.backgroundColor      = "gainsboro";
+	    this._scissorsCtrl.style.backgroundColor   = "gainsboro";
 	    
 	    this._currentTool = this._xformTool
 	} else if (e.target.id == "paintId") {
@@ -160,9 +178,23 @@ class Ttoolbar_main extends Tdiv
 	    this._drawCircleCtrl.style.backgroundColor = "gainsboro";
 	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
 	    this._xformCtrl.style.backgroundColor      = "gainsboro";
+	    this._scissorsCtrl.style.backgroundColor   = "gainsboro";
+	    
 	    this._paintCtrl.style.backgroundColor      = "darkgray";
 	    
 	    this._currentTool = this._paintTool
+
+	} else if (e.target.id == "scissorsId") {
+	    this._selectCtrl.style.backgroundColor     = "gainsboro";	    	    
+	    this._makeBoxCtrl.style.backgroundColor    = "gainsboro";
+	    this._drawCircleCtrl.style.backgroundColor = "gainsboro";
+	    this._drawJointCtrl.style.backgroundColor  = "gainsboro";
+	    this._xformCtrl.style.backgroundColor      = "gainsboro";
+	    this._paintCtrl.style.backgroundColor      = "gainsboro";
+	    
+	    this._scissorsCtrl.style.backgroundColor   = "darkgray";
+	    
+	    this._currentTool = this._scissorsTool
 	}
 
 			 
@@ -199,6 +231,15 @@ class Ttoolbar_main extends Tdiv
 	this._currentTool.mouseUp(e)		
     }
 
+    inSelectionTool()
+    {
+	if (this._currentTool == this._selectTool) {
+	    return true
+	} else {
+	    return false
+	}
+	
+    }
 }
 
 

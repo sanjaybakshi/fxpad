@@ -13,6 +13,18 @@ class Timage
 	this._img.onload = callbackFunc
     }
 
+    static crop(img, left, top, right, bottom)
+    {
+	console.log(left,top,right,bottom)
+	let inMemoryCanvas = new OffscreenCanvas(right-left, bottom-top)
+	let inMemoryContext = inMemoryCanvas.getContext("2d");
+
+	inMemoryContext.drawImage(img, left, top, right-left, bottom-top, 0, 0, right-left, bottom-top)
+	console.log("coords " + -left, -top, right-left, bottom-top)
+	return(inMemoryCanvas.transferToImageBitmap())
+    }
+    
+    
 
 }
 

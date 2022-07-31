@@ -182,6 +182,11 @@ class Tcanvas
 	
 
 	this.setFrame(0)
+
+	// For debugging draw
+	//
+	this._debugImage = new Image()
+	this._debugImage.src = "./dutt_test.png"
     }
 
     draw = () => {
@@ -204,6 +209,8 @@ class Tcanvas
 
 	if (this._pauseAnim) {
 
+	    // Draw the selected objects.
+	    //
 	    for (const b of fModel.fSelectionList._sList) {
 		b.draw(this.fContext, true, true)
 	    }
@@ -225,11 +232,17 @@ class Tcanvas
 
 	// Draw text for debugging.
 	//
+	this.fContext.save()
 	this.fContext.font = '18px ' + 'Avenir'
 	this.fContext.textBaseline = 'top';
 	this.fContext.fillText('ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz Sanjay Dutt', 100,100)
 
+	this.fContext.drawImage(this._debugImage, 100,200,this._debugImage.width/2, this._debugImage.height/2)
 
+	this.fContext.restore()
+
+
+	
 	window.requestAnimationFrame(this.draw);
 
     }
@@ -576,7 +589,11 @@ class Tcanvas
     {
 	this._pauseAnim = true
 
-	this._fToolbar_box.show()
+	if (this.shouldShowToolbar_box()) {
+	
+	    this._fToolbar_box.show()
+	}
+	
 	this._fToolbar_main.show()
     }
 
@@ -600,14 +617,25 @@ class Tcanvas
 	    // 
 	    let xP = (bCenter.x - b.widthInPixels()/2)  + canvasX
 	    let yP = (bCenter.y + b.heightInPixels()/2) + canvasY
-	    
-	    this._fToolbar_box.showAt([xP,yP])
+
+	    if (this.shouldShowToolbar_box()) {
+		this._fToolbar_box.showAt([xP,yP])
+	    } else {
+		this._fToolbar_box.hide()		
+	    }
 	} else {
 	    this._fToolbar_box.hide()
 	}
 
     }
-    
+
+
+    shouldShowToolbar_box()
+    {
+	// Only show it if in selection tool.
+	//
+	return this._fToolbar_main.inSelectionTool()
+    }
 }
 
 export default Tcanvas;

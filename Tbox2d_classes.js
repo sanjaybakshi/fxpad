@@ -5,6 +5,8 @@ import Timage     from "./Timage.js";
 
 import Tfont	  from  "./Tfont.js"
 import TdrawUtils from "./TdrawUtils.js"
+import Trect      from "./Trect.js"
+
 
 let fCanvasWidth  = 0
 let fCanvasHeight = 0
@@ -22,7 +24,6 @@ function pixels2world_vec(v)
     if (usePlanck) {
 	let newVec = planck.Vec2()
 
-	console.log(fCanvasWidth, fWorldWidth)
 	let x = Tmath.remap(0, fCanvasWidth,  0, fWorldWidth,  v.x)
 	let y = Tmath.remap(0, fCanvasHeight, 0, fWorldHeight, v.y)
 
@@ -122,7 +123,7 @@ class Tbox
 	this._sprite2 = new Tsprite2()
 	
 	this._text = ""
-	this._fontSize = 16
+	this._fontSize = 18
 	this._fontName = "Avenir"
 	
     }
@@ -303,6 +304,7 @@ class Tbox
 	    let rot       = this._body_b2d.getAngle();
 	    let pos_pixels = world2pixels_vec(pos_world)
 
+	    ctx.save()
 
 	    if (this.isDynamic()) {
 		this._sprite._rot = -rot
@@ -315,6 +317,7 @@ class Tbox
 		this._sprite2.draw(ctx)
 	    }
 
+	    
 	    ctx.beginPath();
 
 	    if (isSelected == true) {
@@ -330,12 +333,15 @@ class Tbox
 	    }
 
 	    if (!paused) {
-		if (this._sprite._imgBitmap == null) {
+		//if (this._sprite._imgBitmap == null) {
+		if (this._sprite2._img == null) {		    
 		    this.drawRect(ctx, pos_pixels, rot);
 		}
 	    } else {
 		this.drawRect(ctx, pos_pixels, rot);
 	    }
+
+	    ctx.restore()
 	    
 	} else {
 	    let pos_world = this._body_b2d.GetPosition();
@@ -485,7 +491,7 @@ class Tbox
 	
 	this._sprite.drawStrokeOnSprite(s)
 
-	if (!this._sprite2.hasBitmap()) {
+	if (!this._sprite2.hasImage()) {
 	    this._sprite2.initBitmap(this._widthPixels, this._heightPixels)
 	}
 	this._sprite2.drawStrokeOnBitmap(s)
@@ -742,19 +748,28 @@ class Tbox2d_world
 	    let width  = image.width
 	    let height = image.height
 
+	    let ratio = window.devicePixelRatio
+
+	    
+	    if (ratio >= 1) {
+		width  = width  / ratio
+		height = height / ratio
+	    } else {
+		ratio = 1
+	    }
+	    
 	    //pos[0] = 500
 	    //pos[1] = 500
 	    
-	    console.log(pos)
-	    console.log("in the addBox func: " + width + " " + height)
+
 	    let box = new Tbox(pos, width, height, frame, isDynamic)
 
 
 	    
-	    box._sprite.setOrigFileImage(image)
-	    box._sprite.drawFileOnSprite(image)
+	    //box._sprite.setOrigFileImage(image)
+	    //box._sprite.drawFileOnSprite(image)
 
-	    box._sprite2.initBitmapWithImage(image, width, height)
+	    box._sprite2.initBitmap(image, 1/ratio)
 	    
 	    this._fObjectList.push(box)
 	    
@@ -788,7 +803,7 @@ class Tbox2d_world
 	box._sprite.drawTextOnSprite(text, font, fontSize)
 
 	
-	if (!box._sprite2.hasBitmap()) {
+	if (!box._sprite2.hasImage()) {
 	    box._sprite2.initBitmap(bWidth, bHeight)
 	}
 	box._sprite2.drawTextOnBitmap(text, font, fontSize)	
@@ -797,6 +812,135 @@ class Tbox2d_world
     }
 
 
+    scissors(b, verticalSplits, horizontalSplits, frame, isDynamic=true)
+    {
+	let retBoxes = []
+	if (verticalSplits.length > 0) {
+	    
+
+
+	    let boxCenter = b.getCenterInPixels()
+
+	    let x1 = boxCenter.x - b._widthPixels/2
+	    let y1 = boxCenter.y - b._heightPixels/2
+
+	    let left = x1
+	    let top  = y1
+
+	    /*
+	    let xDivisions = horizontalSplits.length
+	    let yDivisions = verticalSplits.length
+
+	    let numBoxes = (xDivisions+1) * (yDivisions+1)
+	    console.log(numBoxes)
+	    */
+
+	    horizontalSplits.push(boxCenter.x + b._widthPixels/2)
+	    verticalSplits.push  (boxCenter.y + b._heightPixels/2)
+	    
+	    console.log(verticalSplits)
+	    console.log(horizontalSplits)	    
+	    for (const y2 of verticalSplits) {
+
+		for (const x2 of horizontalSplits) {
+		    // Make a box using coordinates x1,y1 --> x2,y2
+		    //
+		    console.log("coords")
+		    console.log(x1,y1,x2,y2)
+
+		    const bWidth  = x2-x1
+		    const bHeight = y2-y1
+
+		    if (bWidth > 0 && bHeight > 0) {
+
+			let centerX = x1 + bWidth/2
+			let centerY = y1 + bHeight/2
+			let box = new Tbox([centerX,centerY], bWidth, bHeight, frame, isDynamic);
+			this._fObjectList.push(box)
+			
+			
+			
+			if (b._sprite2.hasImage()) {
+			    let scaleFactor_inverse = Math.floor(1 / b._sprite2.scaleFactor())
+			    
+			    let cropImage = Timage.crop(b._sprite2._img,
+							(x1-left) * scaleFactor_inverse,
+							(y1-top)  * scaleFactor_inverse, 
+							(x2-left) * scaleFactor_inverse,
+							(y2-top)  * scaleFactor_inverse)
+			
+			    console.log("this is the original dimensions: " +
+					b._sprite2._img.width + " " +
+					b._sprite2._img.height)
+			    console.log("this is the crop dimensions: " + cropImage.width, cropImage.height)
+			    box._sprite2.initBitmap(cropImage, b._sprite2.scaleFactor())
+			}
+			
+
+			retBoxes.push(box)
+		    }
+		    x1 = x2
+		}
+		x1 = boxCenter.x - b._widthPixels/2
+		y1 = y2
+	    }
+	}
+
+	return retBoxes
+    }
+
+
+    scissors_horizontal(b, horizontalSplits, frame, isDynamic=true)
+    {
+	let retBoxes = []
+	if (horizontalSplits.length > 0) {
+
+
+	    let r = Trect.constructFromCenterWidthHeight(b.getCenterInPixels(),
+							 b.widthInPixels(),
+							 b.heightInPixels())
+
+	    let coords_x2s = horizontalSplits
+	    coords_x2s.push(r._x2)
+
+	    let cutRect = new Trect()
+	    cutRect._x1 = r._x1
+	    cutRect._y1 = r._y1
+	    cutRect._y2 = r._y2
+	    
+	    for (const x2 of coords_x2s) {
+
+		cutRect._x2 = x2
+
+		if (cutRect.width() > 0 && cutRect.height() > 0) {
+
+		    let box = new Tbox([cutRect.center().x,cutRect.center().y],
+				       cutRect.width(), cutRect.height(), frame, isDynamic);
+		    console.log(box)
+		    
+		    this._fObjectList.push(box)
+			
+		    if (b._sprite2.hasImage()) {
+			let scaleFactor_inverse = Math.floor(1 / b._sprite2.scaleFactor())
+			    
+			let cropImage = Timage.crop(b._sprite2._img,
+						    (cutRect._x1-r._x1) * scaleFactor_inverse,
+						    (cutRect._y1-r._y1) * scaleFactor_inverse, 
+						    (cutRect._x2-r._x1) * scaleFactor_inverse,
+						    (cutRect._y2-r._y1) * scaleFactor_inverse)
+			
+			box._sprite2.initBitmap(cropImage, b._sprite2.scaleFactor())
+		    }
+		    retBoxes.push(box)
+		}
+		cutRect._x1 = x2
+	    }
+	}
+
+	return retBoxes	
+    }
+    
+    
     split(b, frame, isDynamic=true)
     {
 	let retBoxes = []
@@ -820,15 +964,15 @@ class Tbox2d_world
 
 	    let spriteXCoord = 0
 	    let spriteYCoord = 0
-	    
+
 	    for (let y=0; y < yDivisions; y++) {
 		for (let x=0; x < xDivisions; x++) {
 
 		    let box = new Tbox([xCoord,yCoord], bWidth, bHeight, frame, isDynamic);
 		    this._fObjectList.push(box)
 
-		    retBoxes.push(box)
 
+		    /*
 		    if (b._sprite._imgBitmap != null) {
 			var setBoxBitmap = function(bm) {
 			    this._sprite._imgBitmap = bm		
@@ -841,8 +985,47 @@ class Tbox2d_world
 			b._sprite.extractBitmap(spriteXCoord, spriteYCoord, spriteXCoord+bWidth, spriteYCoord+bHeight, boundBitmapFunction)
 
 		    }
+		    */
+
+		    if (b._sprite2.hasImage()) {
+
+
+			// Compute the coordinates to crop the image.
+			//
+
+
+			// FUTURE: Change Timage to TimageUtils
+			//
+			let scaleFactor_inverse = Math.floor(1 / b._sprite2.scaleFactor())
+
+
+			/*
+			let cropImage = Timage.crop(b._sprite2._img,
+						    spriteXCoord * scaleFactor_inverse,
+						    spriteYCoord * scaleFactor_inverse,
+						    (spriteXCoord + bWidth)  * scaleFactor_inverse,
+						    (spriteYCoord + bHeight) * scaleFactor_inverse)
+			*/
+			let cropImage = Timage.crop(b._sprite2._img,
+						    spriteXCoord * scaleFactor_inverse,
+						    spriteYCoord * scaleFactor_inverse, 
+						    (spriteXCoord + bWidth)  * scaleFactor_inverse,
+						    (spriteYCoord + bHeight) * scaleFactor_inverse)
+			
+			console.log("this is the original dimensions: " +
+				    b._sprite2._img.width + " " +
+				    b._sprite2._img.height)
+			console.log("this is the crop dimensions: " + cropImage.width, cropImage.height)
+			box._sprite2.initBitmap(cropImage, b._sprite2.scaleFactor())
+
+			//box._sprite2.snipOrigImage(spriteXCoord, spriteYCoord, spriteXCoord+bWidth, spriteYCoord+bHeight)
+		    }
 		    xCoord       = xCoord       + bWidth
 		    spriteXCoord = spriteXCoord + bWidth
+
+
+		    retBoxes.push(box)
+
 		    
 		}
 		xCoord = left   + bWidth/2
@@ -881,10 +1064,8 @@ class Tbox2d_world
 	    centerY = top  + centerY
 	    
 	    let box = new Tbox([centerX,centerY], r.w, r.h, frame, isDynamic);
-	    this._fObjectList.push(box)
 
-	    retBoxes.push(box)
-	    
+	    /*
 	    var setBoxBitmap = function(bm) {
 		this._sprite._imgBitmap = bm		
 	    }
@@ -894,6 +1075,14 @@ class Tbox2d_world
 	    // Extract the bitmap for this rect.
 	    //
 	    b._sprite.extractBitmap(r.x, r.y, r.x+r.w, r.y+r.h, boundBitmapFunction)
+	    */
+
+	    let extractedBitmap = b._sprite2.extractBitmap(r.x, r.y, r.x+r.w, r.y+r.h)
+	    box._sprite2.initBitmapWithBitmap(extractedBitmap)
+
+	    this._fObjectList.push(box)
+
+	    retBoxes.push(box)
 	}
 
 	return retBoxes
@@ -990,10 +1179,36 @@ class Tbox2d_world
 		let bodyA = contact.getFixtureA().getBody();
 		let bodyB = contact.getFixtureB().getBody();
 
-		bodyA.setGravityScale(1.0)
-		bodyB.setGravityScale(1.0)
-		let boxA = bodyA.getUserData()
-		let boxB = bodyB.getUserData()
+		//let vA = bodyA.getLinearVelocityFromWorldPoint(point);
+		//let vB = bodyB.getLinearVelocityFromWorldPoint(point);
+
+		//let approachVelocity = Vec2.dot(vB -- vA, worldManifold.normal); //[todo]
+
+		
+		let vA = bodyA.getLinearVelocity()
+		let vB = bodyB.getLinearVelocity()
+
+		/*
+		let state1 = []; // [PointState]
+		let state2 = []; // [PointState]
+		manifold.getPointStates(state1, state2, oldManifold, contact.getManifold());
+
+		console.log(state1)
+		*/
+		//let vA = bodyA.getLinearVelocityFromWorldPoint(point);
+		//let vB = bodyB.getLinearVelocityFromWorldPoint(point);
+
+		//let approachVelocity = Vec2.dot(vB -- vA, worldManifold.normal); //[todo]
+
+
+		if (vA.x < 0.0001 && vA.y < 0.001 && vB.x < 0.001 && vB.y < 0.001) {
+
+		} else {
+		    bodyA.setGravityScale(1.0)
+		    bodyB.setGravityScale(1.0)
+		    let boxA = bodyA.getUserData()
+		    let boxB = bodyB.getUserData()
+		}
 	    });
 	    
 
