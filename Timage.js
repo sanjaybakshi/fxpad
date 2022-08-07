@@ -24,7 +24,6 @@ class Timage
 	return(inMemoryCanvas.transferToImageBitmap())
     }
     
-    
 
 }
 

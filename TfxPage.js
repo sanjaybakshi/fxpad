@@ -17,8 +17,9 @@ function init()
     fPalette        = new Tpalette("palette", "brushColor", "brushWidthBtn", "brushWidthWindow", "brushWidthSlider", fCanvas)
 
     
-    
+    fPalette._paletteCtrl.style.display = 'none'
 
+    
     // Try to lay out the controls.
     //
 

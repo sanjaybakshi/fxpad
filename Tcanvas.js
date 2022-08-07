@@ -6,6 +6,7 @@ import Tevent       from "./Tevent.js";
 import Ttouch	    from "./Ttouch.js";
 
 import Ttoolbar_main  from "./Ttoolbar_main.js";
+import Ttoolbar_menu  from "./Ttoolbar_menu.js";
 import Ttoolbar_box   from "./Ttoolbar_box.js";
 import TtextBox       from "./TtextBox.js";
 //import TselectionList from "./TselectionList.js";
@@ -50,6 +51,10 @@ class Tcanvas
 	this._fToolbar_main = new Ttoolbar_main("toolbar.mainId", this)	
 
 	this._fToolbar_main.show()
+
+
+	this._fToolbar_menu = new Ttoolbar_menu("toolbar.menuId", this)
+	this._fToolbar_menu.show()
 	
 	this._fTextBox = new TtextBox("dragDropWindow")
 
@@ -185,8 +190,8 @@ class Tcanvas
 
 	// For debugging draw
 	//
-	this._debugImage = new Image()
-	this._debugImage.src = "./dutt_test.png"
+	//this._debugImage = new Image()
+	//this._debugImage.src = "./dutt_test.png"
     }
 
     draw = () => {
@@ -232,6 +237,7 @@ class Tcanvas
 
 	// Draw text for debugging.
 	//
+/*
 	this.fContext.save()
 	this.fContext.font = '18px ' + 'Avenir'
 	this.fContext.textBaseline = 'top';
@@ -240,7 +246,7 @@ class Tcanvas
 	this.fContext.drawImage(this._debugImage, 100,200,this._debugImage.width/2, this._debugImage.height/2)
 
 	this.fContext.restore()
-
+*/
 
 	
 	window.requestAnimationFrame(this.draw);
@@ -583,6 +589,9 @@ class Tcanvas
 	if (this._fToolbar_main.isVisible()) {
 	    this._fToolbar_main.hide()
 	}
+	if (this._fToolbar_menu.isVisible()) {
+	    this._fToolbar_menu.hide()
+	}
     }
     
     pauseAnim()
@@ -595,6 +604,7 @@ class Tcanvas
 	}
 	
 	this._fToolbar_main.show()
+	this._fToolbar_menu.show()
     }
 
     selectionListChanged()

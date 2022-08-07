@@ -66,6 +66,12 @@ class Tdiv
 	let r = this._div.getBoundingClientRect()
 	return ([r.left, r.top])
     }
+
+    getWidthHeight()
+    {
+	let r = this._div.getBoundingClientRect()
+	return ([r.width, r.height])
+    }
 }
 
 export default Tdiv

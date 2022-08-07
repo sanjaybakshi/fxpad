@@ -530,6 +530,26 @@ class Tbox
     {
 	return this._heightPixels
     }
+
+    box2dict()
+    {
+	let w = this._widthPixels
+	let h = this._heightPixels
+	let s = this._existanceStart
+	let d = this._isDynamic
+	let a = this._activateOnCollision
+
+	let boxData = {width: w, height: h, start: s, isDynamic: d, activateOnCollision: a}
+	return boxData
+	
+/*
+	if (this._sprite2.hasImage()) {
+	    let w = this._sprite2.drawWidth()
+	    let h = this._sprite2.drawHeight()
+	    let i = this._sprite2._img	    
+	}
+*/
+    }
 }
 
 class Tjoint
@@ -635,6 +655,17 @@ class Tjoint
 	    ctx.stroke();
 	}
     }
+
+
+    joint2dict()
+    {
+	let b1Pos = this._box2Pos
+	let b2Pos = this._box2Pos
+
+	let jointData = {b1Pos: b1Pos, b2Pos: b2Pos}
+	return jointData
+    }
+
 }
 
 
@@ -1308,6 +1339,28 @@ class Tbox2d_world
 	//
 	this._fObjectList = this._fObjectList.filter(obj => obj != b);	
     }
+
+
+    boxes2dict()
+    {
+	let boxes  = []
+	let joints = []
+	for (const b of this._fObjectList) {
+	    let bDict = b.box2dict()
+	    boxes.push(bDict)
+	}
+
+	for (const j of this._fJointList) {
+	    let jDict = j.joint2dict()
+	    joints.push(jDict)
+
+	}
+
+	return {boxes: boxes, joints: joints}	
+
+    }
+
+    
 }
 
 export default Tbox2d_world
