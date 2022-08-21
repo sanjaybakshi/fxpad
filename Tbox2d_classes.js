@@ -107,9 +107,9 @@ class Tbox
 	this._existanceStart = existanceStart
 
 	if (usePlanck) {
-	    this._v_pixels = planck.Vec2(pos[0], pos[1])
+	    this._v_pixels = planck.Vec2(pos.x, pos.y)
 	} else {
-	    this._v_pixels = new Box2D.b2Vec2(pos[0], pos[1])
+	    this._v_pixels = new Box2D.b2Vec2(pos.x, pos.y)
 	}
 	this._isDynamic = isDynamic
 
@@ -533,13 +533,31 @@ class Tbox
 
     box2dict()
     {
+	let p = this._v_pixels
 	let w = this._widthPixels
 	let h = this._heightPixels
 	let s = this._existanceStart
 	let d = this._isDynamic
 	let a = this._activateOnCollision
 
-	let boxData = {width: w, height: h, start: s, isDynamic: d, activateOnCollision: a}
+	let boxData
+	
+	if (this._sprite2.hasImage()) {
+	    let iw = this._sprite2.drawWidth()
+	    let ih = this._sprite2.drawHeight()
+	    let ii = this._sprite2._img
+
+	    boxData = {pos: p, width: w, height: h, start: s, isDynamic: d, activateOnCollision: a,
+		       spriteWidth: iw, spriteHeight: ih, spriteImage: ii}
+	    
+	    
+	} else {
+
+	    boxData = {pos: p, width: w, height: h, start: s, isDynamic: d, activateOnCollision: a}
+
+
+	}
+
 	return boxData
 	
 /*
@@ -760,7 +778,7 @@ class Tbox2d_world
 	    isDynamic = params['isDynamic']
 	}
 
-	let pos = [50,50]
+	let pos = {x:50,y:50}
 	if (params.hasOwnProperty('pos')) {
 	    pos = params['pos']
 	}
@@ -886,7 +904,7 @@ class Tbox2d_world
 
 			let centerX = x1 + bWidth/2
 			let centerY = y1 + bHeight/2
-			let box = new Tbox([centerX,centerY], bWidth, bHeight, frame, isDynamic);
+			let box = new Tbox({x:centerX,y:centerY}, bWidth, bHeight, frame, isDynamic);
 			this._fObjectList.push(box)
 			
 			
@@ -945,7 +963,7 @@ class Tbox2d_world
 
 		if (cutRect.width() > 0 && cutRect.height() > 0) {
 
-		    let box = new Tbox([cutRect.center().x,cutRect.center().y],
+		    let box = new Tbox({x:cutRect.center().x,y:cutRect.center().y},
 				       cutRect.width(), cutRect.height(), frame, isDynamic);
 		    console.log(box)
 		    
@@ -999,7 +1017,7 @@ class Tbox2d_world
 	    for (let y=0; y < yDivisions; y++) {
 		for (let x=0; x < xDivisions; x++) {
 
-		    let box = new Tbox([xCoord,yCoord], bWidth, bHeight, frame, isDynamic);
+		    let box = new Tbox({x:xCoord,y:yCoord}, bWidth, bHeight, frame, isDynamic);
 		    this._fObjectList.push(box)
 
 
@@ -1094,7 +1112,7 @@ class Tbox2d_world
 	    centerX = left + centerX
 	    centerY = top  + centerY
 	    
-	    let box = new Tbox([centerX,centerY], r.w, r.h, frame, isDynamic);
+	    let box = new Tbox({x:centerX,y:centerY}, r.w, r.h, frame, isDynamic);
 
 	    /*
 	    var setBoxBitmap = function(bm) {
@@ -1122,7 +1140,7 @@ class Tbox2d_world
     addWordBoxesWithText(pos, width, height, frame, text, font=this._defFontName, fontSize=this._defFontSize, isDynamic=true)
     {
 
-	let tempBox = new Tbox( [pos.x, pos.y], width, height, frame, isDynamic);
+	let tempBox = new Tbox( {x:pos.x, y:pos.y}, width, height, frame, isDynamic);
 			       
 	tempBox._text     = text
 	tempBox._fontSize = fontSize
@@ -1143,7 +1161,7 @@ class Tbox2d_world
 	    let xCoord = left + r.x + r.w/2
 	    let yCoord = top  + r.y + r.h/2
 	    //this.addBoxWithText( [xCoord,yCoord], r.w, frame, w, font="Avenir", fontSize=18, isDynamic=true)
-	    this.addBoxWithText( [xCoord,yCoord], r.w, frame, w, font=font, fontSize=fontSize, isDynamic=true)
+	    this.addBoxWithText( {x:xCoord,y:yCoord}, r.w, frame, w, font=font, fontSize=fontSize, isDynamic=true)
 
 
 	    //this.addBox([xCoord,yCoord], r.w, r.h, frame, isDynamic)
@@ -1280,7 +1298,7 @@ class Tbox2d_world
     //
     {
 	if (usePlanck) {
-	    let m = planck.Vec2(mousePos[0], mousePos[1])
+	    let m = planck.Vec2(mousePos.x, mousePos.y)
 	    
             for (const b of this._fObjectList) {		
 		if (b.isBeingSimulated()) {
@@ -1290,7 +1308,7 @@ class Tbox2d_world
 		}
 	    }
 	} else {
-	    let m = new Box2D.b2Vec2(mousePos[0], mousePos[1])
+	    let m = new Box2D.b2Vec2(mousePos.x, mousePos.y)
 
             for (const b of this._fObjectList) {
 		if (b.isBeingSimulated()) {
@@ -1347,6 +1365,7 @@ class Tbox2d_world
 	let joints = []
 	for (const b of this._fObjectList) {
 	    let bDict = b.box2dict()
+	    console.log(bDict)
 	    boxes.push(bDict)
 	}
 

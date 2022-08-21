@@ -75,7 +75,8 @@ class Ttool_makeBox extends Ttool
 		//
 		if (width > 5 && height > 5) {
 		    //let newBox = this.fCanvas._box2dWorld.addBox(center, width, height, this.fCanvas.getCurrentFrame())
-		    let newBox = fModel.fBox2dWorld.addBox(center, width, height, this.fCanvas.getCurrentFrame())
+		    let newBox = fModel.fBox2dWorld.addBox({x:center[0],y:center[1]},
+							   width, height, this.fCanvas.getCurrentFrame())
 		    newBoxArray.push(newBox)
 		}
 	    }

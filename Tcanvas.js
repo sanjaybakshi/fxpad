@@ -141,6 +141,9 @@ class Tcanvas
 	//this._testSprite = new Timage([this._canvasWidth()/2, this._canvasHeight()/2]);
 	//this._testSprite.setScaleWH(100,200)
 	//this._testSprite.setScale(100)
+
+
+
     }
 
     init() {
@@ -163,7 +166,8 @@ class Tcanvas
 	// Add bottom boundary.
 	//
 	let boundaryPixels = 10
-	fModel.fBox2dWorld.addBox( [this._canvasWidth()/2,this._canvasHeight()-boundaryPixels/2], this._canvasWidth(), boundaryPixels, 0, false );
+	//fModel.fBox2dWorld.addBox( {x:this._canvasWidth()/2,y:this._canvasHeight()-boundaryPixels/2},
+	//this._canvasWidth(), boundaryPixels, 0, false );
 
 	//this.addBox( [fCanvasWidth/2,25], 50, 50, 0, false);	
 
@@ -303,7 +307,7 @@ class Tcanvas
 		    params.image = image
 		    callbackFunc(params)
 		    //let newBox = this._box2dWorld.addBoxWithImage([p.x,p.y], this.getCurrentFrame, image)
-		    let newBox = fModel.fBox2dWorld.addBoxWithImage([p.x,p.y], this.getCurrentFrame, image)
+		    let newBox = fModel.fBox2dWorld.addBoxWithImage({x:p.x,y:p.y}, this.getCurrentFrame, image)
 
 		    
 		    //newBoxArray.push(newBox)
@@ -326,7 +330,7 @@ class Tcanvas
 		let params = { 'pos': [100,200] }
 		
 		reader.onload = function(event) {
-		    let params = { 'pos': [100,200] }
+		    let params = { 'pos': {x:100,y:200} }
 		    var image = new Image()
 		    image.src = event.target.result
 
@@ -444,7 +448,7 @@ class Tcanvas
 	    let center = [e.offsetX, e.offsetY]
 	    //let newBox = fModel.fBox2dWorld.addBoxWithTexture(center, this.getCurrentFrame(), url[1])
 
-	    let params = { 'pos': [e.offsetX, e.offsetY] }
+	    let params = { 'pos': {x:e.offsetX, y:e.offsetY} }
 	    
 	    var image = new Image()
 	    image.src = url[1]
@@ -464,7 +468,7 @@ class Tcanvas
 	} else {
 	    console.log("no url")
 
-	    let center = [e.offsetX, e.offsetY]
+	    let center = {x:e.offsetX, y:e.offsetY}
 
 	    this._fTextBox._div.innerHTML = droppedHTML
 	    

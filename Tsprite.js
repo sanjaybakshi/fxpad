@@ -81,7 +81,7 @@ class Tsprite
 	    ctx.save()
 
 	    
-	    ctx.translate(this._pos[0], this._pos[1])
+	    ctx.translate(this._pos.x, this._pos.y)
 	    ctx.rotate(this._rot);
 	    ctx.scale(this._scaleX, this._scaleY);
 

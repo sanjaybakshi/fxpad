@@ -232,6 +232,9 @@ class Tsprite2
 	this._imgBitmap = inMemoryCanvas.transferToImageBitmap()
 	
     }
+
+
+    
 }
 
 export default Tsprite2
