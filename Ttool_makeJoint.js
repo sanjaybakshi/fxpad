@@ -53,8 +53,8 @@ class Ttool_makeJoint extends Ttool
 	let x = touchInfo.x
 	let y = touchInfo.y
 	    
-	let b = fModel.fBox2dWorld.intersects([x,y])
-	
+	let b = fModel.fBox2dWorld.intersects({x:x,y:y})
+
 	if (b != null) {
 	    // starting to make a joint.
 	    //
@@ -87,7 +87,7 @@ class Ttool_makeJoint extends Ttool
 	let x = touchInfo.x
 	let y = touchInfo.y
 	
-	let b = fModel.fBox2dWorld.intersects([x,y])
+	let b = fModel.fBox2dWorld.intersects({x:x,y:y})
 	
 	if (b != null && b != this._box1) {
 	    // starting to make a joint.

@@ -4,6 +4,7 @@
   <head>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style_toolbars.css">
+    <link rel="stylesheet" href="style_settings.css">
   </head>
   
 
@@ -50,11 +51,30 @@
   </div>
 
   <div class="dropdown-content" id="menuOptionsId">
-    <a id="menuOptionLoadId"   href="#">Load</a>
-    <a id="menuOptionSaveId"   href="#">Save</a>
-    <a id="menuOptionExportId" href="#">Export movie</a>
+    <a id="menuOptionLoadId"     href="#">Load</a>
+    <a id="menuOptionSaveId"     href="#">Save</a>
+    <a id="menuOptionExportId"   href="#">Export movie</a>
+    <a id="menuOptionSettingsId" href="#">Settings</a>    
   </div>
 
+  
+  <div class="settings-panel" id="settingsWndId">
+    <div class="settings-content2">
+      <span class="settings-close-button">&times;</span>
+      <p>Some text in the Settings..</p>
+
+
+      <div class="Slider">
+	Duration
+	<input type="range"  min="1" max="100" value="5" data-color="#f00"  id="slider.durationId">
+	<input type="number" min="1" max="100" value="5"                    id="number.durationId">
+      </div>
+      
+      
+    </div>
+  </div>
+
+  
     
   <div class="toolbar main" id="toolbar.mainId">
     <input class="ImageBtn" type="image" src="./icons/Select2.png"    id="selectId"      >
@@ -118,18 +138,18 @@
 
   <canvas id="fxCanvas"> </canvas> 
 
+
+  
   <div class="TimeSliderGrp" id="playBackCtrl">
-
-    <input class="PlayBtn" type="image" id="playPauseBtn" src="./icons/Play2.png">
-    
+    <input class="PlayBtn" type="image" id="playPauseBtn" src="./icons/Play2.png">    
     <input class="PlaySlider" type="range" id="playSlider"/>
-
     <input class="PlayFrameNum" type="number" min="0" max="255" value="121" id="playFrameNumber" />
-
-
   </div>
 
   <div id="output"></div>  
+
+
+
 
 
   

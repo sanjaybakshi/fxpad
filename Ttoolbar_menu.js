@@ -17,7 +17,8 @@ class Ttoolbar_menu extends Tdiv
 	this._menuButtonCtrl = document.getElementById("menuId")
 
 	
-	this._menuOptionsCtrl = new Tdiv("menuOptionsId")
+	this._menuOptionsCtrl    = new Tdiv("menuOptionsId")
+	this._settingsWindowCtrl = new Tdiv("settingsWndId")
 	
 	this._fCanvas = canvas
 
@@ -44,9 +45,10 @@ class Ttoolbar_menu extends Tdiv
 	});
 
 
-	this._loadMenuItemCtrl   = document.getElementById("menuOptionLoadId")
-	this._saveMenuItemCtrl   = document.getElementById("menuOptionSaveId")
-	this._exportMenuItemCtrl = document.getElementById("menuOptionExportId")	
+	this._loadMenuItemCtrl     = document.getElementById("menuOptionLoadId")
+	this._saveMenuItemCtrl     = document.getElementById("menuOptionSaveId")
+	this._exportMenuItemCtrl   = document.getElementById("menuOptionExportId")
+	this._settingsMenuItemCtrl = document.getElementById("menuOptionSettingsId")		
 
 	
 	this._loadMenuItemCtrl.addEventListener('click', (e) => {
@@ -80,6 +82,18 @@ class Ttoolbar_menu extends Tdiv
 	this._exportMenuItemCtrl.addEventListener('mouseup', (e) => {
 	    e.stopPropagation()
 	});
+
+
+	this._settingsMenuItemCtrl.addEventListener('click', (e) => {
+	    this.menuItemPressed(e)
+	});
+	this._settingsMenuItemCtrl.addEventListener('mousedown', (e) => {
+	    e.stopPropagation()
+	});
+	this._settingsMenuItemCtrl.addEventListener('mouseup', (e) => {
+	    e.stopPropagation()
+	});
+
 	
 
 	//this._menuButtonCtrl.style.height = 24 + 'px'
@@ -457,7 +471,29 @@ class Ttoolbar_menu extends Tdiv
 	} else if (e.target.id == "menuOptionExportId") {
 	    console.log("export")
 
+	} else if (e.target.id == "menuOptionSettingsId") {
+
+
+	    let btnPos = this.getPosition()
+
+
+	    // show it so we can compute the size properly.
+	    //
+	    this._settingsWindowCtrl.show()
+	    let settingsSize = this._settingsWindowCtrl.getWidthHeight()
+
+	    let xPos = btnPos[0] - settingsSize[0]
+	    let yPos = btnPos[1] + 40
+
+	    console.log(xPos,yPos)
+	    this._settingsWindowCtrl.showAt([xPos,yPos])
+
+	    // Hide the menu.
+	    //
+	    this._menuOptionsCtrl.toggleDisplay()
+	    
 	}
+	
     }
     
     menuPressed(e)

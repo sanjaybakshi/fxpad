@@ -335,8 +335,6 @@ class Tcanvas
 		    var image = new Image()
 		    image.src = event.target.result
 
-		    image.onload = () =>  {
-			console.log(image.width, image.height)
 
 			params.image = image
 			console.log(params)

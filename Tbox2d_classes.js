@@ -306,7 +306,7 @@ class Tbox
 
 	    ctx.save()
 
-	    if (this.isDynamic()) {
+	    //if (this.isDynamic()) {
 		this._sprite._rot = -rot
 		this._sprite._pos = [pos_pixels.x, pos_pixels.y]
 		//this._sprite._pos = [Math.floor(pos_pixels.x), Math.floor(pos_pixels.y)]		
@@ -315,7 +315,7 @@ class Tbox
 		this._sprite2._rot = -rot
 		this._sprite2._pos = {x:pos_pixels.x, y:pos_pixels.y}
 		this._sprite2.draw(ctx)
-	    }
+	    //}
 
 	    
 	    ctx.beginPath();
@@ -628,6 +628,9 @@ class Tjoint
 		collideConnected: false,
 	    }, this._box1._body_b2d, this._box2._body_b2d, worldAnchorOnA, worldAnchorOnB))
 
+	    j.m_length = .05
+	    j.m_dampingRatio = 0.1
+	    j.m_frequencyHz = 3.0
 	    
 	    this._joint_b2d = j
 	}
